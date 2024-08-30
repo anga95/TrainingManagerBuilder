@@ -1,18 +1,25 @@
-﻿using System.IO.Compression;
+﻿using System.Diagnostics;
+using System.IO.Compression;
 
 namespace TrainingManagerBuilder;
 
 public class ZipUtilities
 {
+    Stopwatch stopwatch;
     public void ZipDirectory(string sourceDirectory, string zipFilePath)
     {
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        Logger.LogNewSection($"Starting zipping of {sourceDirectory}");
+
         if (File.Exists(zipFilePath))
         {
             File.Delete(zipFilePath); // Deletes old zip file if it exists
         }
 
         ZipFile.CreateFromDirectory(sourceDirectory, zipFilePath);
-        Console.WriteLine($"Zipped {sourceDirectory} to {zipFilePath}");
+        stopwatch.Stop();
+        Logger.Log($"Zipping of {sourceDirectory} completed in {stopwatch.Elapsed.TotalSeconds} seconds.");
     }
 
     public void ReplaceZipFile(string installerPath, string newZipFilePath, string oldVersion, string newVersion, string targetFileNamePattern)

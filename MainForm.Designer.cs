@@ -42,7 +42,6 @@
             txtNextBuild = new TextBox();
             txtNextMinor = new TextBox();
             txtNextMajor = new TextBox();
-            btnUpdateVersion = new Button();
             btnBuildAndPackage = new Button();
             txtOutputPath = new TextBox();
             txtOutputDestination = new Label();
@@ -77,28 +76,28 @@
             // 
             // txtCurrentMajor
             // 
-            txtCurrentMajor.Location = new Point(107, 79);
+            txtCurrentMajor.Location = new Point(107, 105);
             txtCurrentMajor.Name = "txtCurrentMajor";
             txtCurrentMajor.Size = new Size(45, 23);
             txtCurrentMajor.TabIndex = 3;
             // 
             // txtCurrentMinor
             // 
-            txtCurrentMinor.Location = new Point(158, 79);
+            txtCurrentMinor.Location = new Point(158, 105);
             txtCurrentMinor.Name = "txtCurrentMinor";
             txtCurrentMinor.Size = new Size(45, 23);
             txtCurrentMinor.TabIndex = 4;
             // 
             // txtCurrentBuild
             // 
-            txtCurrentBuild.Location = new Point(209, 79);
+            txtCurrentBuild.Location = new Point(209, 105);
             txtCurrentBuild.Name = "txtCurrentBuild";
             txtCurrentBuild.Size = new Size(45, 23);
             txtCurrentBuild.TabIndex = 5;
             // 
             // txtCurrentRevision
             // 
-            txtCurrentRevision.Location = new Point(260, 79);
+            txtCurrentRevision.Location = new Point(260, 105);
             txtCurrentRevision.Name = "txtCurrentRevision";
             txtCurrentRevision.Size = new Size(45, 23);
             txtCurrentRevision.TabIndex = 6;
@@ -106,7 +105,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 82);
+            label1.Location = new Point(12, 108);
             label1.Name = "label1";
             label1.Size = new Size(88, 15);
             label1.TabIndex = 7;
@@ -115,7 +114,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(12, 120);
+            label2.Location = new Point(12, 146);
             label2.Name = "label2";
             label2.Size = new Size(73, 15);
             label2.TabIndex = 12;
@@ -123,45 +122,35 @@
             // 
             // txtNextRevision
             // 
-            txtNextRevision.Location = new Point(260, 117);
+            txtNextRevision.Location = new Point(260, 143);
             txtNextRevision.Name = "txtNextRevision";
             txtNextRevision.Size = new Size(45, 23);
             txtNextRevision.TabIndex = 11;
             // 
             // txtNextBuild
             // 
-            txtNextBuild.Location = new Point(209, 117);
+            txtNextBuild.Location = new Point(209, 143);
             txtNextBuild.Name = "txtNextBuild";
             txtNextBuild.Size = new Size(45, 23);
             txtNextBuild.TabIndex = 10;
             // 
             // txtNextMinor
             // 
-            txtNextMinor.Location = new Point(158, 117);
+            txtNextMinor.Location = new Point(158, 143);
             txtNextMinor.Name = "txtNextMinor";
             txtNextMinor.Size = new Size(45, 23);
             txtNextMinor.TabIndex = 9;
             // 
             // txtNextMajor
             // 
-            txtNextMajor.Location = new Point(107, 117);
+            txtNextMajor.Location = new Point(107, 143);
             txtNextMajor.Name = "txtNextMajor";
             txtNextMajor.Size = new Size(45, 23);
             txtNextMajor.TabIndex = 8;
             // 
-            // btnUpdateVersion
-            // 
-            btnUpdateVersion.Location = new Point(107, 146);
-            btnUpdateVersion.Name = "btnUpdateVersion";
-            btnUpdateVersion.Size = new Size(198, 33);
-            btnUpdateVersion.TabIndex = 13;
-            btnUpdateVersion.Text = "Update to next version";
-            btnUpdateVersion.UseVisualStyleBackColor = true;
-            btnUpdateVersion.Click += btnUpdateVersion_Click;
-            // 
             // btnBuildAndPackage
             // 
-            btnBuildAndPackage.Location = new Point(209, 314);
+            btnBuildAndPackage.Location = new Point(12, 172);
             btnBuildAndPackage.Name = "btnBuildAndPackage";
             btnBuildAndPackage.Size = new Size(173, 57);
             btnBuildAndPackage.TabIndex = 14;
@@ -171,7 +160,7 @@
             // 
             // txtOutputPath
             // 
-            txtOutputPath.Location = new Point(168, 238);
+            txtOutputPath.Location = new Point(168, 60);
             txtOutputPath.Name = "txtOutputPath";
             txtOutputPath.Size = new Size(394, 23);
             txtOutputPath.TabIndex = 15;
@@ -179,7 +168,7 @@
             // txtOutputDestination
             // 
             txtOutputDestination.AutoSize = true;
-            txtOutputDestination.Location = new Point(20, 241);
+            txtOutputDestination.Location = new Point(12, 63);
             txtOutputDestination.Name = "txtOutputDestination";
             txtOutputDestination.Size = new Size(142, 15);
             txtOutputDestination.TabIndex = 16;
@@ -187,7 +176,7 @@
             // 
             // btnBrowseOutput
             // 
-            btnBrowseOutput.Location = new Point(568, 238);
+            btnBrowseOutput.Location = new Point(568, 60);
             btnBrowseOutput.Name = "btnBrowseOutput";
             btnBrowseOutput.Size = new Size(75, 23);
             btnBrowseOutput.TabIndex = 17;
@@ -204,7 +193,6 @@
             Controls.Add(txtOutputDestination);
             Controls.Add(txtOutputPath);
             Controls.Add(btnBuildAndPackage);
-            Controls.Add(btnUpdateVersion);
             Controls.Add(label2);
             Controls.Add(txtNextRevision);
             Controls.Add(txtNextBuild);
@@ -240,7 +228,6 @@
         private TextBox txtNextBuild;
         private TextBox txtNextMinor;
         private TextBox txtNextMajor;
-        private Button btnUpdateVersion;
         private Button btnBuildAndPackage;
         private TextBox txtOutputPath;
         private Label txtOutputDestination;

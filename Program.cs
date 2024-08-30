@@ -2,16 +2,24 @@ namespace TrainingManagerBuilder
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
+
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
+
+
+            try
+            {
+                Logger.Log("Application started");
+                ApplicationConfiguration.Initialize();
+                Application.Run(new MainForm());
+                Logger.Log("Application ended");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+
         }
     }
 }

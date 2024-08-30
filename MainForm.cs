@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace TrainingManagerBuilder
 {
     public partial class MainForm : Form
@@ -34,9 +36,6 @@ namespace TrainingManagerBuilder
 
         private void InitBuilders()
         {
-            //string tmPath = Path.Combine(txtSourcePath.Text, @"TM");
-            //string websitePath = Path.Combine(txtSourcePath.Text, @"TMReportsWebsite");
-            //string installerPath = Path.Combine(txtSourcePath.Text, @"TMInstaller");
             string solutionPath = Path.Combine(txtSourcePath.Text, "TrainingManager.sln");
 
             tmBuilder = new BuildTM(solutionPath);
@@ -59,20 +58,6 @@ namespace TrainingManagerBuilder
             txtNextRevision.Text = nextVersion.Revision.ToString();
         }
 
-        private void btnUpdateVersion_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
-                versionManager.UpdateVersionInFiles(newVersion);
-                MessageBox.Show("Version numbers updated successfully!");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void btnBrowseOutput_Click(object sender, EventArgs e)
         {
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
@@ -88,14 +73,31 @@ namespace TrainingManagerBuilder
             }
 
         }
-
+        private void UpdateVersionInFiles()
+        {
+            try
+            {
+                string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
+                versionManager.UpdateVersionInFiles(newVersion);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void btnBuildAndPackage_Click(object sender, EventArgs e)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            Logger.Log("Build and package process started.");
+
+            UpdateVersionInFiles();
+
             try
             {
                 string oldVersion = $"{txtCurrentMajor.Text}.{txtCurrentMinor.Text}.{txtCurrentBuild.Text}.{txtCurrentRevision.Text}";
                 string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
-
 
                 string outputDirectory = txtOutputPath.Text;
                 string versionOutputDirectory = Path.Combine(outputDirectory, $"TM {newVersion}");
@@ -113,44 +115,50 @@ namespace TrainingManagerBuilder
                 zipUtilities.ReplaceZipFile(installerPath, websiteZipPath, oldVersion, newVersion, $"TM Reports Website {oldVersion}.zip");
                 BuildAndZipInstaller(newVersion, versionOutputDirectory);
 
-                MessageBox.Show("Build, package, and installer update completed successfully!");
+                stopwatch.Stop();
+
+                Logger.Log($"Build, package, and installer update completed successfully in {stopwatch.Elapsed.TotalMinutes:F2} minutes.");
+
+                MessageBox.Show($"Build, package, and installer update completed successfully!\nTotal runtime: {stopwatch.Elapsed.TotalMinutes:F2} minutes");
             }
             catch (Exception ex)
             {
+                stopwatch.Stop();
+                Logger.LogError($"Build, package, and installer update failed after {stopwatch.Elapsed.TotalMinutes:F2} minutes. Error: {ex.Message}");
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
 
-        private string BuildAndZipTm(string version, string versionOutputDirectory)
+        private string BuildAndZipTm(string newVersion, string versionOutputDirectory)
         {
             tmBuilder.Build();
 
             string tmReleasePath = Path.Combine(txtSourcePath.Text, @"bin\Release");
-            string tmZipPath = Path.Combine(versionOutputDirectory, $"TM {version}.zip");
+            string tmZipPath = Path.Combine(versionOutputDirectory, $"TM {newVersion}.zip");
             zipUtilities.ZipDirectory(tmReleasePath, tmZipPath);
 
             return tmZipPath;
         }
 
-        private string BuildAndZipWebsite(string version, string versionOutputDirectory)
+        private string BuildAndZipWebsite(string newVersion, string versionOutputDirectory)
         {
             tmWebsiteBuilder.Build();
 
             string websiteReleasePath = Path.Combine(txtSourcePath.Text, @"TMReportsWebsite");
-            string websiteZipPath = Path.Combine(versionOutputDirectory, $"TM Reports Website {version}.zip");
+            string websiteZipPath = Path.Combine(versionOutputDirectory, $"TM Reports Website {newVersion}.zip");
             zipUtilities.ZipDirectory(websiteReleasePath, websiteZipPath);
 
             return websiteZipPath;
         }
 
-        private void BuildAndZipInstaller(string version, string versionOutputDirectory)
+        private void BuildAndZipInstaller(string newVersion, string versionOutputDirectory)
         {
 
             tmInstallerBuilder.Build();
 
             string installerReleasePath = Path.Combine(txtSourcePath.Text, @"TMInstaller\bin\Release");
-            string installerZipPath = Path.Combine(versionOutputDirectory, $"TM Installer {version}.zip");
+            string installerZipPath = Path.Combine(versionOutputDirectory, $"TM Installer {newVersion}.zip");
             zipUtilities.ZipDirectory(installerReleasePath, installerZipPath);
         }
 

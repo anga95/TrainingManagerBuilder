@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 
 public class VersionManager
 {
@@ -41,12 +42,34 @@ public class VersionManager
 
     public void UpdateVersionInFiles(string newVersion)
     {
+        Logger.LogNewSection($"Starting version update to {newVersion}");
+        var logBuilder = new StringBuilder();
+        var updateCount = 0;
         foreach (var file in filesToUpdate)
         {
             string content = File.ReadAllText(file);
+
+            int originalMatches = Regex.Matches(content, versionPattern).Count;
+
             content = Regex.Replace(content, versionPattern, newVersion);
+
+            int newMatches = Regex.Matches(content, newVersion).Count;
+
+            int updatedMatches = originalMatches;
+
             File.WriteAllText(file, content);
+
+            logBuilder.AppendLine($"Updated {file}: {updatedMatches} occurrences replaced.");
         }
+
+        int totalChanges = filesToUpdate.Sum(file =>
+        {
+            string content = File.ReadAllText(file);
+            return Regex.Matches(content, newVersion).Count;
+        });
+
+        logBuilder.AppendLine($"Total changes: {totalChanges}");
+        Logger.Log(logBuilder.ToString());
     }
 
     public (int Major, int Minor, int Build, int Revision) GetNextVersion(int currentMajor, int currentMinor, int currentBuild, int currentRevision)

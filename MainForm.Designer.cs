@@ -1,6 +1,6 @@
 ﻿namespace TrainingManagerBuilder
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -42,7 +42,6 @@
             lblSourcePath.Size = new Size(228, 15);
             lblSourcePath.TabIndex = 0;
             lblSourcePath.Text = "Path to /source/ that contains the .sln file:";
-            lblSourcePath.Click += label1_Click;
             // 
             // txtSourcePath
             // 
@@ -61,7 +60,7 @@
             btnBrowse.UseVisualStyleBackColor = true;
             btnBrowse.Click += btnBrowse_Click;
             // 
-            // Form1
+            // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -69,7 +68,7 @@
             Controls.Add(btnBrowse);
             Controls.Add(txtSourcePath);
             Controls.Add(lblSourcePath);
-            Name = "Form1";
+            Name = "MainForm";
             Text = "Form1";
             ResumeLayout(false);
             PerformLayout();

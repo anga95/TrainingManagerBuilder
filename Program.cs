@@ -6,8 +6,6 @@ namespace TrainingManagerBuilder
         [STAThread]
         static void Main()
         {
-
-
             try
             {
                 Logger.Log("Application started");

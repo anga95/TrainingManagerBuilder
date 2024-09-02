@@ -12,14 +12,13 @@ public static class Logger
         string fileName = $"log_{date}.txt";
         logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", fileName);
 
-        // Skapa katalogen om den inte finns
         string logDirectory = Path.GetDirectoryName(logFilePath);
         if (!Directory.Exists(logDirectory))
         {
             Directory.CreateDirectory(logDirectory);
         }
 
-        // Starta bakgrundstråden för att hantera loggningen
+        // Create a task to process the log queue
         logTask = Task.Factory.StartNew(ProcessLogQueue, TaskCreationOptions.LongRunning);
 
         using (StreamWriter sw = File.CreateText(logFilePath))
@@ -34,12 +33,12 @@ public static class Logger
     }
     public static void LogNewSection(string message)
     {
-        logQueue.Add($"{Environment.NewLine}{DateTime.Now.ToString()}: {message}");
+        logQueue.Add($"{Environment.NewLine}{DateTime.Now}: {message}");
     }
 
     public static void LogError(string message)
     {
-        logQueue.Add($"{DateTime.Now.ToString()}: ERROR: {message}");
+        logQueue.Add($"{DateTime.Now}: ERROR: {message}");
     }
 
     private static void ProcessLogQueue()

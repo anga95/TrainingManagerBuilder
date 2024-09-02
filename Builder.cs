@@ -43,7 +43,6 @@ public abstract class Builder : IBuilder
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
-                        // Logga endast varningar och fel
                         if (line.Contains("warning") || line.Contains("error"))
                         {
                             Logger.Log(line);
@@ -60,14 +59,14 @@ public abstract class Builder : IBuilder
                     }
                 }
 
-                process.WaitForExit(10000); // Väntar i 10 sekunder
+                process.WaitForExit(5000); // wait 5 seconds
                 if (!process.HasExited)
                 {
                     Logger.Log($"MSBuild process is still running after 10 seconds. Attempting to kill the process.");
                     process.Kill();
                 }
 
-                // Kontrollera om processen avslutades med en felkod
+                // Check if MSBuild failed
                 if (process.ExitCode != 0)
                 {
                     Logger.LogError($"MSBuild failed with exit code: {process.ExitCode}");

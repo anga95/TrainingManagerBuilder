@@ -10,7 +10,7 @@ public static class Logger
     {
         string date = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
         string fileName = $"log_{date}.txt";
-        logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+        logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", fileName);
 
         // Skapa katalogen om den inte finns
         string logDirectory = Path.GetDirectoryName(logFilePath);
@@ -22,7 +22,6 @@ public static class Logger
         // Starta bakgrundstråden för att hantera loggningen
         logTask = Task.Factory.StartNew(ProcessLogQueue, TaskCreationOptions.LongRunning);
 
-        // Skapa eller rensa loggfilen när programmet startar
         using (StreamWriter sw = File.CreateText(logFilePath))
         {
             sw.WriteLine("Log started: " + DateTime.Now.ToString());

@@ -19,7 +19,8 @@ public class VersionManager
             Path.Combine(sourcePath, @"TMReportsWebsite\Version\Version.txt"),
             Path.Combine(sourcePath, @"TMService\Properties\AssemblyInfo.cs"),
             Path.Combine(sourcePath, @"TranslationFileConverter\Properties\AssemblyInfo.cs"),
-            Path.Combine(sourcePath, @"UserInterface\Properties\AssemblyInfo.cs")
+            Path.Combine(sourcePath, @"UserInterface\Properties\AssemblyInfo.cs"),
+            Path.Combine(sourcePath, @"TMInstaller\TMInstaller.csproj")
         };
     }
 
@@ -40,26 +41,22 @@ public class VersionManager
         throw new InvalidOperationException("Version number not found in the specified files.");
     }
 
-    public void UpdateVersionInFiles(string newVersion)
+    public void UpdateVersionInFiles(string newVersion, ProgressBar progressBar)
     {
+        progressBar.Maximum = filesToUpdate.Count;
+        progressBar.Value = 0;
+
         Logger.LogNewSection($"Starting version update to {newVersion}");
         var logBuilder = new StringBuilder();
-        var updateCount = 0;
         foreach (var file in filesToUpdate)
         {
             string content = File.ReadAllText(file);
-
-            int originalMatches = Regex.Matches(content, versionPattern).Count;
-
             content = Regex.Replace(content, versionPattern, newVersion);
-
-            int newMatches = Regex.Matches(content, newVersion).Count;
-
-            int updatedMatches = originalMatches;
-
             File.WriteAllText(file, content);
 
-            logBuilder.AppendLine($"Updated {file}: {updatedMatches} occurrences replaced.");
+            logBuilder.AppendLine($"Updated {file}");
+
+            progressBar.Value += 1;
         }
 
         int totalChanges = filesToUpdate.Sum(file =>

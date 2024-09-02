@@ -1,7 +1,6 @@
 using System.Diagnostics;
+using Timer = System.Windows.Forms.Timer;
 
-
-// TODO TM INSTALLER KOPIERAR INTE RÄTT FILER TILL OUTPUT
 namespace TrainingManagerBuilder
 {
     public partial class MainForm : Form
@@ -13,11 +12,14 @@ namespace TrainingManagerBuilder
         private ZipUtilities zipUtilities;
 
         private Stopwatch elapsedTimeStopWatch;
-        private System.Windows.Forms.Timer elapsedTimeTimer;
+        private Timer elapsedTimeTimer;
+
+        private Dictionary<ProgressBar, (Stopwatch, Timer, Label)> processTimers;
 
         public MainForm()
         {
             InitializeComponent();
+            InitializeProcessTimers();
             zipUtilities = new ZipUtilities();
 
             elapsedTimeStopWatch = new Stopwatch();
@@ -26,9 +28,47 @@ namespace TrainingManagerBuilder
             elapsedTimeTimer.Tick += ElapsedTime_Tick;
         }
 
+        private void InitializeProcessTimers()
+        {
+            processTimers = new Dictionary<ProgressBar, (Stopwatch, Timer, Label)>
+            {
+                { progressBarUpdateFileVersions, (new Stopwatch(), new Timer(), lblElapsedTimeFileVersion) },
+                { progressBarTM, (new Stopwatch(), new Timer(), lblElapsedTimeTM) },
+                { progressBarWeb, (new Stopwatch(), new Timer(), lblElapsedTimeWeb) },
+                { progressBarMove, (new Stopwatch(), new Timer(), lblElapsedTimeMove) },
+                { progressBarInstaller, (new Stopwatch(), new Timer(), lblElapsedTimeInstaller) }
+            };
+
+            foreach (var entry in processTimers)
+            {
+                entry.Value.Item2.Interval = 1000;
+                entry.Value.Item2.Tick += (sender, e) =>
+                {
+                    entry.Value.Item3.Text = entry.Value.Item1.Elapsed.ToString(@"hh\:mm\:ss");
+                };
+            }
+        }
+
         private void ElapsedTime_Tick(object sender, EventArgs e)
         {
             lblElapsedTime.Text = elapsedTimeStopWatch.Elapsed.ToString(@"hh\:mm\:ss");
+        }
+
+        private void StartProcessTimer(ProgressBar progressBar)
+        {
+            var (stopwatch, timer, label) = processTimers[progressBar];
+            label.Text = "00:00:00";
+            stopwatch.Reset();
+            stopwatch.Start();
+            timer.Start();
+        }
+
+        private void StopProcessTimer(ProgressBar progressBar)
+        {
+            var (stopwatch, timer, label) = processTimers[progressBar];
+            stopwatch.Stop();
+            timer.Stop();
+            label.Text += " - Done";
         }
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
@@ -114,7 +154,9 @@ namespace TrainingManagerBuilder
             Logger.Log("Build and package process started.");
 
             // Step 1: Update version in files
+            StartProcessTimer(progressBarUpdateFileVersions);
             UpdateVersionInFiles();
+            StopProcessTimer(progressBarUpdateFileVersions);
 
             try
             {
@@ -132,30 +174,41 @@ namespace TrainingManagerBuilder
 
                 // Step 2: Build and zip TM sequentially
                 string tmReleasePath = Path.Combine(txtSourcePath.Text, @"bin\Release");
+                StartProcessTimer(progressBarTM);
                 string tmZipPath = await Task.Run(() =>
                     BuildAndZipProject(tmBuilder, tmReleasePath, versionOutputDirectory, $"TM {newVersion}.zip", progressBarTM));
+                StopProcessTimer(progressBarTM);
+
                 CheckAndWaitForOtherProcesses();
 
                 // Step 3: Build and zip TM Reports Website sequentially
                 string websiteReleasePath = Path.Combine(txtSourcePath.Text, @"TMReportsWebsite");
+                StartProcessTimer(progressBarWeb);
                 string websiteZipPath = await Task.Run(() =>
                     BuildAndZipProject(tmWebsiteBuilder, websiteReleasePath, versionOutputDirectory, $"TM Reports Website {newVersion}.zip", progressBarWeb));
-
+                StopProcessTimer(progressBarWeb);
                 CheckAndWaitForOtherProcesses();
 
                 // Step 4: Replace zip files in TMInstaller
+                StartProcessTimer(progressBarMove);
                 await ReplaceInstallerZipfiles(tmZipPath, oldVersion, newVersion, websiteZipPath);
+                StopProcessTimer(progressBarMove);
 
                 // Step 5: Build and zip TM Installer
                 string installerReleasePath = Path.Combine(txtSourcePath.Text, @"TMInstaller\bin\Release");
+                StartProcessTimer(progressBarInstaller);
                 await Task.Run(() =>
                     BuildAndZipProject(tmInstallerBuilder, installerReleasePath, versionOutputDirectory, $"TM Installer {newVersion}.zip", progressBarInstaller));
-
+                StopProcessTimer(progressBarInstaller);
                 SetProgressBarValue(progressBarInstaller, 2);
 
                 // step 6: Add Training Manager Release Notes.txt
-                string releaseNotesPath = Path.Combine(versionOutputDirectory, "Training Manager Release Notes.txt");
-                File.Copy(Path.Combine(txtSourcePath.Text, "TMInstaller", "Documents", "Training Manager Release Notes.txt"), releaseNotesPath);
+                if (!File.Exists(Path.Combine(versionOutputDirectory, "Training Manager Release Notes.txt")))
+                {
+                    string releaseNotesPath = Path.Combine(versionOutputDirectory, "Training Manager Release Notes.txt");
+                    File.Copy(Path.Combine(txtSourcePath.Text, "TMInstaller", "Documents", "Training Manager Release Notes.txt"), releaseNotesPath);
+                }
+
 
 
                 stopwatch.Stop();
@@ -277,5 +330,9 @@ namespace TrainingManagerBuilder
             return zipPath;
         }
 
+        private void lblElapsedTimeTM_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

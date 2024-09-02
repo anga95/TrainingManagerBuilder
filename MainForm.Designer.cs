@@ -57,6 +57,11 @@
             lblProgressInstaller = new Label();
             progressBarInstaller = new ProgressBar();
             lblElapsedTime = new Label();
+            lblElapsedTimeFileVersion = new Label();
+            lblElapsedTimeTM = new Label();
+            lblElapsedTimeWeb = new Label();
+            lblElapsedTimeMove = new Label();
+            lblElapsedTimeInstaller = new Label();
             SuspendLayout();
             // 
             // lblSourcePath
@@ -216,9 +221,9 @@
             lblProgressTM.AutoSize = true;
             lblProgressTM.Location = new Point(303, 225);
             lblProgressTM.Name = "lblProgressTM";
-            lblProgressTM.Size = new Size(96, 15);
+            lblProgressTM.Size = new Size(94, 15);
             lblProgressTM.TabIndex = 21;
-            lblProgressTM.Text = "Build and Zip Tm";
+            lblProgressTM.Text = "Build and zip Tm";
             // 
             // progressBarTM
             // 
@@ -264,9 +269,9 @@
             lblProgressInstaller.AutoSize = true;
             lblProgressInstaller.Location = new Point(278, 343);
             lblProgressInstaller.Name = "lblProgressInstaller";
-            lblProgressInstaller.Size = new Size(121, 15);
+            lblProgressInstaller.Size = new Size(122, 15);
             lblProgressInstaller.TabIndex = 27;
-            lblProgressInstaller.Text = "Build Installer and Zip";
+            lblProgressInstaller.Text = "Build and zip Installer ";
             // 
             // progressBarInstaller
             // 
@@ -284,11 +289,62 @@
             lblElapsedTime.TabIndex = 28;
             lblElapsedTime.Text = "lblElapsedTime";
             // 
+            // lblElapsedTimeFileVersion
+            // 
+            lblElapsedTimeFileVersion.AutoSize = true;
+            lblElapsedTimeFileVersion.Location = new Point(538, 179);
+            lblElapsedTimeFileVersion.Name = "lblElapsedTimeFileVersion";
+            lblElapsedTimeFileVersion.Size = new Size(48, 15);
+            lblElapsedTimeFileVersion.TabIndex = 29;
+            lblElapsedTimeFileVersion.Text = "Waiting";
+            // 
+            // lblElapsedTimeTM
+            // 
+            lblElapsedTimeTM.AutoSize = true;
+            lblElapsedTimeTM.Location = new Point(538, 225);
+            lblElapsedTimeTM.Name = "lblElapsedTimeTM";
+            lblElapsedTimeTM.Size = new Size(48, 15);
+            lblElapsedTimeTM.TabIndex = 30;
+            lblElapsedTimeTM.Text = "Waiting";
+            lblElapsedTimeTM.Click += lblElapsedTimeTM_Click;
+            // 
+            // lblElapsedTimeWeb
+            // 
+            lblElapsedTimeWeb.AutoSize = true;
+            lblElapsedTimeWeb.Location = new Point(538, 254);
+            lblElapsedTimeWeb.Name = "lblElapsedTimeWeb";
+            lblElapsedTimeWeb.Size = new Size(48, 15);
+            lblElapsedTimeWeb.TabIndex = 31;
+            lblElapsedTimeWeb.Text = "Waiting";
+            // 
+            // lblElapsedTimeMove
+            // 
+            lblElapsedTimeMove.AutoSize = true;
+            lblElapsedTimeMove.Location = new Point(538, 301);
+            lblElapsedTimeMove.Name = "lblElapsedTimeMove";
+            lblElapsedTimeMove.Size = new Size(48, 15);
+            lblElapsedTimeMove.TabIndex = 32;
+            lblElapsedTimeMove.Text = "Waiting";
+            // 
+            // lblElapsedTimeInstaller
+            // 
+            lblElapsedTimeInstaller.AutoSize = true;
+            lblElapsedTimeInstaller.Location = new Point(538, 343);
+            lblElapsedTimeInstaller.Name = "lblElapsedTimeInstaller";
+            lblElapsedTimeInstaller.Size = new Size(48, 15);
+            lblElapsedTimeInstaller.TabIndex = 33;
+            lblElapsedTimeInstaller.Text = "Waiting";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(647, 382);
+            Controls.Add(lblElapsedTimeInstaller);
+            Controls.Add(lblElapsedTimeMove);
+            Controls.Add(lblElapsedTimeWeb);
+            Controls.Add(lblElapsedTimeTM);
+            Controls.Add(lblElapsedTimeFileVersion);
             Controls.Add(lblElapsedTime);
             Controls.Add(lblProgressInstaller);
             Controls.Add(progressBarInstaller);
@@ -354,5 +410,10 @@
         private Label lblProgressInstaller;
         private ProgressBar progressBarInstaller;
         private Label lblElapsedTime;
+        private Label lblElapsedTimeFileVersion;
+        private Label lblElapsedTimeTM;
+        private Label lblElapsedTimeWeb;
+        private Label lblElapsedTimeMove;
+        private Label lblElapsedTimeInstaller;
     }
 }

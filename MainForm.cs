@@ -15,6 +15,9 @@ namespace TrainingManagerBuilder
         public MainForm()
         {
             InitializeComponent();
+            this.Icon = new Icon(AppDomain.CurrentDomain.BaseDirectory + "svincoolvalmetlogga.ico");
+            this.Text = "Training Manager Builder";
+            btnBuildAndPackage.Enabled = false;
             processTimerManager = new ProcessTimerManager(new Dictionary<ProgressBar, Label>
             {
                 { progressBarUpdateFileVersions, lblElapsedTimeFileVersion },
@@ -39,21 +42,41 @@ namespace TrainingManagerBuilder
         {
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
             {
-                folderBrowserDialog.Description = "Select the folder that contains the .sln file";
+                //folderBrowserDialog.Description = "Select the /source/-folder that contains the .sln file";
                 folderBrowserDialog.ShowNewFolderButton = false;
 
                 DialogResult result = folderBrowserDialog.ShowDialog();
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
                 {
                     txtSourcePath.Text = folderBrowserDialog.SelectedPath;
-                    versionManager = new VersionManager(txtSourcePath.Text);
+
+                    // Validate the selected folder
+                    if (IsValidSourcePath(txtSourcePath.Text))
+                    {
+                        versionManager = new VersionManager(txtSourcePath.Text);
 #if DEBUG
-                    txtOutputPath.Text = @"C:\Users\andgab\Downloads";
+                        txtOutputPath.Text = @"C:\Users\andgab\Downloads";
 #endif
-                    LoadCurrentVersion();
-                    InitBuilders();
+                        LoadCurrentVersion();
+                        InitBuilders();
+
+                        btnBuildAndPackage.Enabled = true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("The selected folder does not contain a valid solution file (.sln).\nPlease select a correct folder.",
+                            "Invalid Folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        btnBuildAndPackage.Enabled = false;
+                    }
                 }
             }
+        }
+
+        private bool IsValidSourcePath(string folderPath)
+        {
+            // Check if the folder contains a .sln file
+            var solutionFiles = Directory.GetFiles(folderPath, "*.sln");
+            return solutionFiles.Length > 0;
         }
 
         private void InitBuilders()
@@ -225,8 +248,8 @@ namespace TrainingManagerBuilder
             txtNextMinor.Enabled = false;
             txtNextBuild.Enabled = false;
             txtNextRevision.Enabled = false;
-            chkOpenGitAfterBuild.Enabled = false;
-            chkOpenGitAfterBuild.Checked = false;
+            //chkOpenGitAfterBuild.Enabled = false;
+            //chkOpenOutputFolderAfterBuild.Enabled = false;
         }
 
         private void UnlockControls()
@@ -244,8 +267,8 @@ namespace TrainingManagerBuilder
             txtNextMinor.Enabled = true;
             txtNextBuild.Enabled = true;
             txtNextRevision.Enabled = true;
-            chkOpenGitAfterBuild.Enabled = true;
-            chkOpenGitAfterBuild.Checked = true;
+            //chkOpenGitAfterBuild.Enabled = true;
+            //chkOpenOutputFolderAfterBuild.Enabled = true;
         }
 
         private void SetProgressBars()

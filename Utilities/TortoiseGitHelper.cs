@@ -20,7 +20,7 @@ public class TortoiseGitHelper
     {
         try
         {
-            AddFilestogit(repositoryPath, newVersion);
+            AddFilesToGit(repositoryPath, newVersion);
 
             string commitMessage = $"Release {newVersion}";
 
@@ -32,16 +32,24 @@ public class TortoiseGitHelper
                 UseShellExecute = true
             };
 
-            Process.Start(startInfo);
+            Process process = Process.Start(startInfo);
+            if (process != null)
+            {
+                Logger.Log("TortoiseGit commit dialog opened successfully.");
+            }
+            else
+            {
+                Logger.LogError("Failed to start TortoiseGit process.");
+            }
         }
         catch (Exception ex)
         {
             Logger.LogError($"Failed to open TortoiseGit: {ex.Message}");
-            throw; // Optionally rethrow or handle the exception as needed
+            throw;
         }
     }
 
-    private void AddFilestogit(string repositoryPath, string newVersion)
+    private void AddFilesToGit(string repositoryPath, string newVersion)
     {
         List<string> filesToAdd = new List<string>
         {
@@ -49,29 +57,46 @@ public class TortoiseGitHelper
             Path.Combine(repositoryPath, $"TMInstaller\\Files\\TM Reports Website {newVersion}.zip")
         };
 
-        // Se till att alla nya filer är versionerade
+        Logger.LogNewSection("Starting to add files to Git...");
+
         foreach (var file in filesToAdd)
         {
-            ProcessStartInfo gitAddInfo = new ProcessStartInfo
+            try
             {
-                FileName = "git",
-                Arguments = $"add \"{file}\"",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-                WorkingDirectory = repositoryPath
-            };
+                Logger.Log($"Attempting to add file to Git: {file}");
 
-            using (Process process = Process.Start(gitAddInfo))
-            {
-                process.WaitForExit();
-                if (process.ExitCode != 0)
+                ProcessStartInfo gitAddInfo = new ProcessStartInfo
                 {
-                    string error = process.StandardError.ReadToEnd();
-                    Logger.LogError($"Failed to add file {file} to git: {error}");
+                    FileName = "git",
+                    Arguments = $"add \"{file}\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    WorkingDirectory = repositoryPath
+                };
+
+                using (Process process = Process.Start(gitAddInfo))
+                {
+                    process.WaitForExit();
+                    if (process.ExitCode == 0)
+                    {
+                        Logger.Log($"Successfully added file to Git: {file}");
+                    }
+                    else
+                    {
+                        string error = process.StandardError.ReadToEnd();
+                        Logger.LogError($"Failed to add file {file} to Git: {error}");
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Exception occurred while adding file {file} to Git: {ex.Message}");
+            }
         }
+
+        Logger.Log("Finished adding files to Git.");
     }
+
 }

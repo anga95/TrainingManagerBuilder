@@ -70,15 +70,15 @@
             lblSourcePath.AutoSize = true;
             lblSourcePath.Location = new Point(12, 34);
             lblSourcePath.Name = "lblSourcePath";
-            lblSourcePath.Size = new Size(228, 15);
+            lblSourcePath.Size = new Size(167, 15);
             lblSourcePath.TabIndex = 0;
-            lblSourcePath.Text = "Path to /source/ that contains the .sln file:";
+            lblSourcePath.Text = "Path to project /source/ folder";
             // 
             // txtSourcePath
             // 
-            txtSourcePath.Location = new Point(246, 31);
+            txtSourcePath.Location = new Point(185, 31);
             txtSourcePath.Name = "txtSourcePath";
-            txtSourcePath.Size = new Size(316, 23);
+            txtSourcePath.Size = new Size(377, 23);
             txtSourcePath.TabIndex = 1;
             // 
             // btnBrowseSource
@@ -178,9 +178,9 @@
             // 
             // txtOutputPath
             // 
-            txtOutputPath.Location = new Point(168, 60);
+            txtOutputPath.Location = new Point(185, 60);
             txtOutputPath.Name = "txtOutputPath";
-            txtOutputPath.Size = new Size(394, 23);
+            txtOutputPath.Size = new Size(377, 23);
             txtOutputPath.TabIndex = 15;
             // 
             // txtOutputDestination

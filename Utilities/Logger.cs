@@ -43,6 +43,23 @@ public static class Logger
         logQueue.Add($"{DateTime.Now}: ERROR: {message}");
     }
 
+    public static void LogError(string message, Exception ex = null)
+    {
+        string errorMessage = $"{DateTime.Now}: ERROR: {message}";
+
+        if (ex != null)
+        {
+            var stackTrace = new System.Diagnostics.StackTrace(ex, true);
+            var frame = stackTrace.GetFrame(0);
+            var fileName = frame.GetFileName();
+            var lineNumber = frame.GetFileLineNumber();
+
+            errorMessage += $"\nException: {ex.Message}\nStackTrace: {ex.StackTrace}\nLocation: {fileName} - Line: {lineNumber}";
+        }
+
+        logQueue.Add(errorMessage);
+    }
+
     private static void ProcessLogQueue(CancellationToken token)
     {
         try

@@ -48,7 +48,6 @@ public class VersionManager
 
         Logger.LogNewSection($"Starting version update to {newVersion}");
         var logBuilder = new StringBuilder();
-        int totalChanges = 0;
 
         foreach (var file in filesToUpdate)
         {
@@ -62,13 +61,11 @@ public class VersionManager
                     if (!content.Equals(updatedContent))
                     {
                         File.WriteAllText(file, updatedContent);
-                        int changesInFile = Regex.Matches(updatedContent, newVersion).Count;
-                        totalChanges += changesInFile;
-                        logBuilder.AppendLine($"Updated {file}: {changesInFile} changes.");
+                        logBuilder.AppendLine($"Updated {file}");
                     }
                     else
                     {
-                        logBuilder.AppendLine($"No changes in {file}.");
+                        logBuilder.AppendLine($"No changes needed for {file}");
                     }
                 }
                 else
@@ -84,7 +81,6 @@ public class VersionManager
             progressBar.Value += 1;
         }
 
-        logBuilder.AppendLine($"Total changes: {totalChanges}");
         Logger.Log(logBuilder.ToString());
     }
 

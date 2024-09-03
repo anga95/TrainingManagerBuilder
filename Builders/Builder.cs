@@ -37,36 +37,14 @@ public abstract class Builder : IBuilder
 
             using (Process process = Process.Start(startInfo))
             {
-                using (StreamReader reader = process.StandardOutput)
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (line.Contains("warning") || line.Contains("error"))
-                        {
-                            //Logger.Log(line);
-                        }
-                    }
-                }
+                string output = process.StandardOutput.ReadToEnd(); // Read the output before waiting for exit
+                string errorOutput = process.StandardError.ReadToEnd(); // Read the error before waiting for exit
 
-                using (StreamReader errorReader = process.StandardError)
-                {
-                    string errorResult = errorReader.ReadToEnd();
-                    if (!string.IsNullOrEmpty(errorResult))
-                    {
-                        //Logger.LogError(errorResult);
-                    }
-                }
+                process.WaitForExit(); // Wait for the process to exit
 
-                int waitTimer = 5000;
-                process.WaitForExit(waitTimer);
-                if (!process.HasExited)
-                {
-                    Logger.Log($"MSBuild process is still running after {waitTimer / 1000} seconds. Attempting to kill the process.");
-                    process.Kill();
-                }
+                Logger.Log(output); // Log standard output
+                Logger.LogError(errorOutput); // Log standard error
 
-                // Check if MSBuild failed
                 if (process.ExitCode != 0)
                 {
                     Logger.LogError($"MSBuild failed with exit code: {process.ExitCode}");
@@ -113,6 +91,7 @@ public abstract class Builder : IBuilder
         {
             if (File.Exists(path))
             {
+                Logger.Log($"MSBuild found at: {path}");
                 return path;
             }
         }
@@ -162,7 +141,7 @@ public abstract class Builder : IBuilder
         }
         catch (Exception)
         {
-            Logger.LogError("MSBuild not found in PATH.");
+            //Logger.LogError("MSBuild not found in PATH.");
         }
 
         return null;

@@ -61,6 +61,8 @@
             lblElapsedTimeWeb = new Label();
             lblElapsedTimeMove = new Label();
             lblElapsedTimeInstaller = new Label();
+            chkOpenGitAfterBuild = new CheckBox();
+            chkOpenOutputFolderAfterBuild = new CheckBox();
             SuspendLayout();
             // 
             // lblSourcePath
@@ -166,7 +168,7 @@
             // 
             // btnBuildAndPackage
             // 
-            btnBuildAndPackage.Location = new Point(30, 221);
+            btnBuildAndPackage.Location = new Point(12, 301);
             btnBuildAndPackage.Name = "btnBuildAndPackage";
             btnBuildAndPackage.Size = new Size(173, 57);
             btnBuildAndPackage.TabIndex = 14;
@@ -326,11 +328,35 @@
             lblElapsedTimeInstaller.TabIndex = 33;
             lblElapsedTimeInstaller.Text = "Waiting";
             // 
+            // chkOpenGitAfterBuild
+            // 
+            chkOpenGitAfterBuild.AutoSize = true;
+            chkOpenGitAfterBuild.Checked = true;
+            chkOpenGitAfterBuild.CheckState = CheckState.Checked;
+            chkOpenGitAfterBuild.Location = new Point(12, 175);
+            chkOpenGitAfterBuild.Name = "chkOpenGitAfterBuild";
+            chkOpenGitAfterBuild.Size = new Size(171, 19);
+            chkOpenGitAfterBuild.TabIndex = 34;
+            chkOpenGitAfterBuild.Text = "Open TortoiseGit after build";
+            chkOpenGitAfterBuild.UseVisualStyleBackColor = true;
+            // 
+            // chkOpenOutputFolderAfterBuild
+            // 
+            chkOpenOutputFolderAfterBuild.AutoSize = true;
+            chkOpenOutputFolderAfterBuild.Location = new Point(12, 200);
+            chkOpenOutputFolderAfterBuild.Name = "chkOpenOutputFolderAfterBuild";
+            chkOpenOutputFolderAfterBuild.Size = new Size(201, 19);
+            chkOpenOutputFolderAfterBuild.TabIndex = 35;
+            chkOpenOutputFolderAfterBuild.Text = "Open output directory after build";
+            chkOpenOutputFolderAfterBuild.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(647, 382);
+            Controls.Add(chkOpenOutputFolderAfterBuild);
+            Controls.Add(chkOpenGitAfterBuild);
             Controls.Add(lblElapsedTimeInstaller);
             Controls.Add(lblElapsedTimeMove);
             Controls.Add(lblElapsedTimeWeb);
@@ -404,5 +430,7 @@
         private Label lblElapsedTimeWeb;
         private Label lblElapsedTimeMove;
         private Label lblElapsedTimeInstaller;
+        private CheckBox chkOpenGitAfterBuild;
+        private CheckBox chkOpenOutputFolderAfterBuild;
     }
 }

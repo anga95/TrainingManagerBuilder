@@ -177,26 +177,24 @@ namespace TrainingManagerBuilder
             {
                 totalStopwatch.Stop();
                 UnlockControls();
-                TortoiseGitHelper gitHelper = new TortoiseGitHelper();
-                string tmZipFileName = $"Files/TM {newVersion}.zip";
-                string websiteZipFileName = $"Files/TM Reports Website {newVersion}.zip";
 
-                // Repository path och filerna som ska markeras i commit-dialogen
-                string repositoryPath = txtSourcePath.Text;
-                string[] filesToCommit = { tmZipFileName, websiteZipFileName };
-
-                // Öppna TortoiseGit och markera de specifika filerna för commit
-                gitHelper.OpenCommitDialog(repositoryPath);
-
-                try
+                if (chkOpenGitAfterBuild.Checked)
                 {
-#if !DEBUG
-                    OpenOutputFolder(txtOutputPath.Text);
-#endif
+                    TortoiseGitHelper gitHelper = new TortoiseGitHelper();
+                    string repositoryPath = txtSourcePath.Text;
+                    gitHelper.OpenCommitDialog(repositoryPath, newVersion);
                 }
-                catch (Exception ex)
+
+                if (chkOpenOutputFolderAfterBuild.Checked)
                 {
-                    Logger.LogError($"Failed to open output folder: {ex.Message}");
+                    try
+                    {
+                        OpenOutputFolder(txtOutputPath.Text);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError($"Failed to open output folder: {ex.Message}");
+                    }
                 }
             }
         }
@@ -216,6 +214,8 @@ namespace TrainingManagerBuilder
             txtNextMinor.Enabled = false;
             txtNextBuild.Enabled = false;
             txtNextRevision.Enabled = false;
+            chkOpenGitAfterBuild.Enabled = false;
+            chkOpenGitAfterBuild.Checked = false;
         }
 
         private void UnlockControls()
@@ -233,6 +233,8 @@ namespace TrainingManagerBuilder
             txtNextMinor.Enabled = true;
             txtNextBuild.Enabled = true;
             txtNextRevision.Enabled = true;
+            chkOpenGitAfterBuild.Enabled = true;
+            chkOpenGitAfterBuild.Checked = true;
         }
 
         private void SetProgressBars()

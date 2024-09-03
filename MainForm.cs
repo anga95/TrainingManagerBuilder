@@ -101,8 +101,11 @@ namespace TrainingManagerBuilder
             Stopwatch totalStopwatch = new Stopwatch();
             totalStopwatch.Start();
             LockControls();
+            string oldVersion = $"{txtCurrentMajor.Text}.{txtCurrentMinor.Text}.{txtCurrentBuild.Text}.{txtCurrentRevision.Text}";
+            string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
             try
             {
+
                 KillAllMSBuildProcesses();
                 SetProgressBars();
 
@@ -110,8 +113,6 @@ namespace TrainingManagerBuilder
                 UpdateVersionInFiles();
                 processTimerManager.StopTimer(progressBarUpdateFileVersions);
 
-                string oldVersion = $"{txtCurrentMajor.Text}.{txtCurrentMinor.Text}.{txtCurrentBuild.Text}.{txtCurrentRevision.Text}";
-                string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
 
                 string outputDirectory = txtOutputPath.Text;
                 string versionOutputDirectory = Path.Combine(outputDirectory, $"{newVersion}");
@@ -176,10 +177,22 @@ namespace TrainingManagerBuilder
             {
                 totalStopwatch.Stop();
                 UnlockControls();
+                TortoiseGitHelper gitHelper = new TortoiseGitHelper();
+                string tmZipFileName = $"Files/TM {newVersion}.zip";
+                string websiteZipFileName = $"Files/TM Reports Website {newVersion}.zip";
+
+                // Repository path och filerna som ska markeras i commit-dialogen
+                string repositoryPath = txtSourcePath.Text;
+                string[] filesToCommit = { tmZipFileName, websiteZipFileName };
+
+                // Öppna TortoiseGit och markera de specifika filerna för commit
+                gitHelper.OpenCommitDialog(repositoryPath);
 
                 try
                 {
+#if !DEBUG
                     OpenOutputFolder(txtOutputPath.Text);
+#endif
                 }
                 catch (Exception ex)
                 {
@@ -221,8 +234,6 @@ namespace TrainingManagerBuilder
             txtNextBuild.Enabled = true;
             txtNextRevision.Enabled = true;
         }
-
-
 
         private void SetProgressBars()
         {

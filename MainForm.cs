@@ -8,6 +8,7 @@ namespace TrainingManagerBuilder
         private IBuilder tmBuilder, tmWebsiteBuilder, tmInstallerBuilder;
         private ZipUtilities zipUtilities;
         private ProcessTimerManager processTimerManager;
+        private UserSettings userSettings;
 
         public MainForm()
         {
@@ -22,6 +23,14 @@ namespace TrainingManagerBuilder
             });
 
             zipUtilities = new ZipUtilities();
+            LoadUserSettings();
+        }
+
+        private void LoadUserSettings()
+        {
+            userSettings = UserSettings.LoadSettings();
+            chkOpenGitAfterBuild.Checked = userSettings.OpenTortoiseGitAfterBuild;
+            chkOpenOutputFolderAfterBuild.Checked = userSettings.OpenOutputDirectoryAfterBuild;
         }
 
         private void btnBrowseSource_Click(object sender, EventArgs e)

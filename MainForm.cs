@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using TrainingManagerBuilder.Builders;
+using TrainingManagerBuilder.Utilities;
 
 namespace TrainingManagerBuilder
 {
@@ -345,9 +347,17 @@ namespace TrainingManagerBuilder
             return zipPath;
         }
 
-        private void lblElapsedTimeTM_Click(object sender, EventArgs e)
+        private void chkOpenGitAfterBuild_CheckedChanged(object sender, EventArgs e)
         {
+            userSettings.OpenTortoiseGitAfterBuild = chkOpenGitAfterBuild.Checked;
+            userSettings.SaveSettings();
 
+        }
+
+        private void chkOpenOutputFolderAfterBuild_CheckedChanged(object sender, EventArgs e)
+        {
+            userSettings.OpenOutputDirectoryAfterBuild = chkOpenOutputFolderAfterBuild.Checked;
+            userSettings.SaveSettings();
         }
     }
 }

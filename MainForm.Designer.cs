@@ -299,7 +299,6 @@
             lblElapsedTimeTM.Size = new Size(48, 15);
             lblElapsedTimeTM.TabIndex = 30;
             lblElapsedTimeTM.Text = "Waiting";
-            lblElapsedTimeTM.Click += lblElapsedTimeTM_Click;
             // 
             // lblElapsedTimeWeb
             // 
@@ -339,6 +338,7 @@
             chkOpenGitAfterBuild.TabIndex = 34;
             chkOpenGitAfterBuild.Text = "Open TortoiseGit after build";
             chkOpenGitAfterBuild.UseVisualStyleBackColor = true;
+            chkOpenGitAfterBuild.CheckedChanged += chkOpenGitAfterBuild_CheckedChanged;
             // 
             // chkOpenOutputFolderAfterBuild
             // 
@@ -349,6 +349,7 @@
             chkOpenOutputFolderAfterBuild.TabIndex = 35;
             chkOpenOutputFolderAfterBuild.Text = "Open output directory after build";
             chkOpenOutputFolderAfterBuild.UseVisualStyleBackColor = true;
+            chkOpenOutputFolderAfterBuild.CheckedChanged += chkOpenOutputFolderAfterBuild_CheckedChanged;
             // 
             // MainForm
             // 

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace TrainingManagerBuilder.Builders;
 
@@ -36,24 +35,16 @@ public abstract class Builder : IBuilder
                 CreateNoWindow = true
             };
 
-            try
+            using (Process process = Process.Start(startInfo))
             {
-                using (Process process = Process.Start(startInfo))
-                {
-                    process.WaitForExit(5000); // Wait for the process to exit
+                process.WaitForExit(); // Wait for the process to exit
 
-                    if (process.ExitCode != 0)
-                    {
-                        Logger.LogError($"MSBuild exit code: {process.ExitCode}");
-                    }
+                if (process.ExitCode != 0)
+                {
+                    Logger.LogError($"MSBuild failed with exit code: {process.ExitCode}");
                 }
             }
-            catch (Win32Exception ex)
-            {
-                Logger.LogError($"Failed to start process: {ex.Message}");
-                throw;
-            }
-            
+
 
             stopwatch.Stop();
             Logger.Log($"Build for project {projectName} completed successfully in {stopwatch.Elapsed.TotalSeconds} seconds.");

@@ -3,8 +3,8 @@ using System.Text.RegularExpressions;
 
 public class VersionManager
 {
-    private string versionPattern = @"\d+\.\d+\.\d+\.\d+";
-    private List<string> filesToUpdate;
+    private readonly string versionPattern = @"\d+\.\d+\.\d+\.\d+";
+    private readonly List<string> filesToUpdate;
 
     public VersionManager(string sourcePath)
     {
@@ -48,22 +48,41 @@ public class VersionManager
 
         Logger.LogNewSection($"Starting version update to {newVersion}");
         var logBuilder = new StringBuilder();
+        int totalChanges = 0;
+
         foreach (var file in filesToUpdate)
         {
-            string content = File.ReadAllText(file);
-            content = Regex.Replace(content, versionPattern, newVersion);
-            File.WriteAllText(file, content);
+            try
+            {
+                if (File.Exists(file))
+                {
+                    string content = File.ReadAllText(file);
+                    string updatedContent = Regex.Replace(content, versionPattern, newVersion);
 
-            logBuilder.AppendLine($"Updated {file}");
+                    if (!content.Equals(updatedContent))
+                    {
+                        File.WriteAllText(file, updatedContent);
+                        int changesInFile = Regex.Matches(updatedContent, newVersion).Count;
+                        totalChanges += changesInFile;
+                        logBuilder.AppendLine($"Updated {file}: {changesInFile} changes.");
+                    }
+                    else
+                    {
+                        logBuilder.AppendLine($"No changes in {file}.");
+                    }
+                }
+                else
+                {
+                    logBuilder.AppendLine($"File not found: {file}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Failed to update {file}: {ex.Message}");
+            }
 
             progressBar.Value += 1;
         }
-
-        int totalChanges = filesToUpdate.Sum(file =>
-        {
-            string content = File.ReadAllText(file);
-            return Regex.Matches(content, newVersion).Count;
-        });
 
         logBuilder.AppendLine($"Total changes: {totalChanges}");
         Logger.Log(logBuilder.ToString());

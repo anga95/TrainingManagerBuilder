@@ -1,0 +1,11 @@
+﻿####################################################################################################
+
+Not tested, update this file if this is not correct.
+
+Run vs_buildTools.exe and install: 
+1. ".NET desktop build tools" and
+2. "Web development build tools" (probably needed to build website, but not 100% sure about this)
+
+This will install the necessary tools to build Training Manager with this program.
+
+####################################################################################################

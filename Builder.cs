@@ -6,7 +6,6 @@ public abstract class Builder : IBuilder
 {
     protected string solutionPath;
     protected string projectName;
-    private Stopwatch stopwatch;
 
     public Builder(string solutionPath, string projectName)
     {
@@ -45,7 +44,7 @@ public abstract class Builder : IBuilder
                     {
                         if (line.Contains("warning") || line.Contains("error"))
                         {
-                            Logger.Log(line);
+                            //Logger.Log(line);
                         }
                     }
                 }
@@ -55,14 +54,15 @@ public abstract class Builder : IBuilder
                     string errorResult = errorReader.ReadToEnd();
                     if (!string.IsNullOrEmpty(errorResult))
                     {
-                        Logger.LogError(errorResult);
+                        //Logger.LogError(errorResult);
                     }
                 }
 
-                process.WaitForExit(5000); // wait 5 seconds
+                int waitTimer = 5000;
+                process.WaitForExit(waitTimer);
                 if (!process.HasExited)
                 {
-                    Logger.Log($"MSBuild process is still running after 10 seconds. Attempting to kill the process.");
+                    Logger.Log($"MSBuild process is still running after {(waitTimer / 1000)} seconds. Attempting to kill the process.");
                     process.Kill();
                 }
 

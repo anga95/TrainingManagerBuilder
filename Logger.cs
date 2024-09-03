@@ -5,6 +5,7 @@ public static class Logger
     private static readonly BlockingCollection<string> logQueue = new BlockingCollection<string>();
     private static string logFilePath;
     private static Task logTask;
+    private static CancellationTokenSource cts = new CancellationTokenSource();
 
     static Logger()
     {
@@ -19,7 +20,7 @@ public static class Logger
         }
 
         // Create a task to process the log queue
-        logTask = Task.Factory.StartNew(ProcessLogQueue, TaskCreationOptions.LongRunning);
+        logTask = Task.Factory.StartNew(() => ProcessLogQueue(cts.Token), cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
         using (StreamWriter sw = File.CreateText(logFilePath))
         {
@@ -31,6 +32,7 @@ public static class Logger
     {
         logQueue.Add($"{DateTime.Now.ToString()}: {message}");
     }
+
     public static void LogNewSection(string message)
     {
         logQueue.Add($"{Environment.NewLine}{DateTime.Now}: {message}");
@@ -41,20 +43,45 @@ public static class Logger
         logQueue.Add($"{DateTime.Now}: ERROR: {message}");
     }
 
-    private static void ProcessLogQueue()
+    private static void ProcessLogQueue(CancellationToken token)
     {
-        foreach (var logEntry in logQueue.GetConsumingEnumerable())
+        try
         {
-            using (StreamWriter sw = File.AppendText(logFilePath))
+            foreach (var logEntry in logQueue.GetConsumingEnumerable(token))
             {
-                sw.WriteLine(logEntry);
+                using (StreamWriter sw = File.AppendText(logFilePath))
+                {
+                    sw.WriteLine(logEntry);
+                }
             }
+        }
+        catch (Exception ex) when (ex is OperationCanceledException or IOException)
+        {
+            // Logging canceled or I/O error occurred
+            Console.Error.WriteLine($"Logging failed or was canceled: {ex.Message}");
         }
     }
 
     public static void Dispose()
     {
         logQueue.CompleteAdding();
-        logTask.Wait();
+        cts.Cancel();
+        try
+        {
+            logTask.Wait(cts.Token); // Wait for the log task to finish processing
+        }
+        catch (OperationCanceledException)
+        {
+            // Expected during shutdown, no need to handle
+        }
+        catch (AggregateException ae)
+        {
+            // Log or handle any exceptions thrown by the logging task
+            ae.Handle(ex =>
+            {
+                Console.Error.WriteLine($"Error during logging disposal: {ex.Message}");
+                return true;
+            });
+        }
     }
 }

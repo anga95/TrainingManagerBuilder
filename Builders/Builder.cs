@@ -25,12 +25,13 @@ public abstract class Builder : IBuilder
             string msbuildPath = FindMSBuildPath();
             string arguments = $"\"{solutionPath}\" /t:Rebuild /p:Configuration=Release /p:ProjectName={projectName}";
 
+            // RedirectStandardOutput and RedirectStandardError are not used because MSBuild output is too verbose
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = msbuildPath,
                 Arguments = arguments,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
+                //RedirectStandardOutput = true,
+                //RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
@@ -41,7 +42,7 @@ public abstract class Builder : IBuilder
 
                 if (process.ExitCode != 0)
                 {
-                    Logger.LogError($"MSBuild failed with exit code: {process.ExitCode}");
+                    Logger.Log($"MSBuild exit code: {process.ExitCode}");
                 }
             }
 

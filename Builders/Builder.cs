@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 
 namespace TrainingManagerBuilder.Builders;
 
@@ -35,21 +36,24 @@ public abstract class Builder : IBuilder
                 CreateNoWindow = true
             };
 
-            using (Process process = Process.Start(startInfo))
+            try
             {
-                string output = process.StandardOutput.ReadToEnd(); // Read the output before waiting for exit
-                string errorOutput = process.StandardError.ReadToEnd(); // Read the error before waiting for exit
-
-                process.WaitForExit(); // Wait for the process to exit
-
-                Logger.Log(output); // Log standard output
-                Logger.LogError(errorOutput); // Log standard error
-
-                if (process.ExitCode != 0)
+                using (Process process = Process.Start(startInfo))
                 {
-                    Logger.LogError($"MSBuild failed with exit code: {process.ExitCode}");
+                    process.WaitForExit(5000); // Wait for the process to exit
+
+                    if (process.ExitCode != 0)
+                    {
+                        Logger.LogError($"MSBuild exit code: {process.ExitCode}");
+                    }
                 }
             }
+            catch (Win32Exception ex)
+            {
+                Logger.LogError($"Failed to start process: {ex.Message}");
+                throw;
+            }
+            
 
             stopwatch.Stop();
             Logger.Log($"Build for project {projectName} completed successfully in {stopwatch.Elapsed.TotalSeconds} seconds.");
@@ -63,10 +67,19 @@ public abstract class Builder : IBuilder
 
     public static string FindMSBuildPath()
     {
+        var settings = UserSettings.LoadSettings();
+        if (!string.IsNullOrEmpty(settings.MSBuildPath) && File.Exists(settings.MSBuildPath))
+        {
+            Logger.Log($"Using saved MSBuild path: {settings.MSBuildPath}");
+            return settings.MSBuildPath;
+        }
+
         // Try to find MSBuild in PATH, if present use it.
         string msbuildInPath = FindMSBuildInPath();
         if (!string.IsNullOrEmpty(msbuildInPath))
         {
+            settings.MSBuildPath = msbuildInPath;
+            settings.SaveSettings();
             return msbuildInPath;
         }
 
@@ -92,6 +105,8 @@ public abstract class Builder : IBuilder
             if (File.Exists(path))
             {
                 Logger.Log($"MSBuild found at: {path}");
+                settings.MSBuildPath = path;
+                settings.SaveSettings();
                 return path;
             }
         }
@@ -107,6 +122,8 @@ public abstract class Builder : IBuilder
 
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
+            settings.MSBuildPath = openFileDialog.FileName;
+            settings.SaveSettings();
             return openFileDialog.FileName;
         }
 

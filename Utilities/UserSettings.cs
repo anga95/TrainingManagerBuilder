@@ -6,6 +6,8 @@ public class UserSettings
     public bool OpenTortoiseGitAfterBuild { get; set; }
     public bool OpenOutputDirectoryAfterBuild { get; set; }
 
+    public string MSBuildPath { get; set; }
+
     public static string ConfigFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "userSettings.json");
 
     public static UserSettings LoadSettings()

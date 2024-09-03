@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace TrainingManagerBuilder;
+namespace TrainingManagerBuilder.Builders;
 
 public abstract class Builder : IBuilder
 {
@@ -62,7 +62,7 @@ public abstract class Builder : IBuilder
                 process.WaitForExit(waitTimer);
                 if (!process.HasExited)
                 {
-                    Logger.Log($"MSBuild process is still running after {(waitTimer / 1000)} seconds. Attempting to kill the process.");
+                    Logger.Log($"MSBuild process is still running after {waitTimer / 1000} seconds. Attempting to kill the process.");
                     process.Kill();
                 }
 

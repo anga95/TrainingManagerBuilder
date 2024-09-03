@@ -1,4 +1,4 @@
-﻿namespace TrainingManagerBuilder;
+﻿namespace TrainingManagerBuilder.Builders;
 
 public class BuildTM : Builder
 {

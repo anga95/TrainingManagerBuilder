@@ -56,7 +56,6 @@
             progressBarMove = new ProgressBar();
             lblProgressInstaller = new Label();
             progressBarInstaller = new ProgressBar();
-            lblElapsedTime = new Label();
             lblElapsedTimeFileVersion = new Label();
             lblElapsedTimeTM = new Label();
             lblElapsedTimeWeb = new Label();
@@ -87,6 +86,7 @@
             btnBrowseSource.Size = new Size(75, 23);
             btnBrowseSource.TabIndex = 2;
             btnBrowseSource.Text = "Browse...";
+            btnBrowseSource.TextImageRelation = TextImageRelation.TextAboveImage;
             btnBrowseSource.UseVisualStyleBackColor = true;
             btnBrowseSource.Click += btnBrowseSource_Click;
             // 
@@ -280,15 +280,6 @@
             progressBarInstaller.Size = new Size(127, 23);
             progressBarInstaller.TabIndex = 26;
             // 
-            // lblElapsedTime
-            // 
-            lblElapsedTime.AutoSize = true;
-            lblElapsedTime.Location = new Point(43, 311);
-            lblElapsedTime.Name = "lblElapsedTime";
-            lblElapsedTime.Size = new Size(86, 15);
-            lblElapsedTime.TabIndex = 28;
-            lblElapsedTime.Text = "lblElapsedTime";
-            // 
             // lblElapsedTimeFileVersion
             // 
             lblElapsedTimeFileVersion.AutoSize = true;
@@ -345,7 +336,6 @@
             Controls.Add(lblElapsedTimeWeb);
             Controls.Add(lblElapsedTimeTM);
             Controls.Add(lblElapsedTimeFileVersion);
-            Controls.Add(lblElapsedTime);
             Controls.Add(lblProgressInstaller);
             Controls.Add(progressBarInstaller);
             Controls.Add(lblProgressMoveZips);
@@ -409,7 +399,6 @@
         private ProgressBar progressBarMove;
         private Label lblProgressInstaller;
         private ProgressBar progressBarInstaller;
-        private Label lblElapsedTime;
         private Label lblElapsedTimeFileVersion;
         private Label lblElapsedTimeTM;
         private Label lblElapsedTimeWeb;

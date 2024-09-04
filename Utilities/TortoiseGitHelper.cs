@@ -1,18 +1,18 @@
 ﻿using System.Diagnostics;
+using System.Drawing.Text;
 
 public class TortoiseGitHelper
 {
     private readonly string tortoiseGitPath;
 
-    public TortoiseGitHelper(string tortoiseGitExecutablePath = @"C:\Program Files\TortoiseGit\bin\TortoiseGitProc.exe")
+    public TortoiseGitHelper()
     {
-        if (File.Exists(tortoiseGitExecutablePath))
+        var settings = UserSettings.Instance;
+        tortoiseGitPath = settings.TortoiseGitPath;
+
+        if (string.IsNullOrEmpty(tortoiseGitPath) || !File.Exists(tortoiseGitPath))
         {
-            tortoiseGitPath = tortoiseGitExecutablePath;
-        }
-        else
-        {
-            throw new FileNotFoundException("TortoiseGit executable not found at the specified path.");
+            throw new FileNotFoundException("TortoiseGit path is not set or invalid.");
         }
     }
 

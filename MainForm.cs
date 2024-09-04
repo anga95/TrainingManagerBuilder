@@ -10,14 +10,22 @@ namespace TrainingManagerBuilder
         private IBuilder tmBuilder, tmWebsiteBuilder, tmInstallerBuilder;
         private ZipUtilities zipUtilities;
         private ProcessTimerManager processTimerManager;
-        private UserSettings userSettings;
+        private UserSettings settings;
 
         public MainForm()
         {
             InitializeComponent();
+            settings = UserSettings.Instance;
+
             this.Icon = new Icon(AppDomain.CurrentDomain.BaseDirectory + "svincoolvalmetlogga.ico");
             this.Text = "Training Manager Builder";
             btnBuildAndPackage.Enabled = false;
+
+            chkOpenGitAfterBuild.Enabled = settings.IsTortoiseGitAvailable;
+            chkOpenGitAfterBuild.Checked = settings.OpenTortoiseGitAfterBuild;
+            chkOpenOutputFolderAfterBuild.Enabled = settings.OpenOutputDirectoryAfterBuild;
+
+
             processTimerManager = new ProcessTimerManager(new Dictionary<ProgressBar, Label>
             {
                 { progressBarUpdateFileVersions, lblElapsedTimeFileVersion },
@@ -28,21 +36,12 @@ namespace TrainingManagerBuilder
             });
 
             zipUtilities = new ZipUtilities();
-            LoadUserSettings();
-        }
-
-        private void LoadUserSettings()
-        {
-            userSettings = UserSettings.LoadSettings();
-            chkOpenGitAfterBuild.Checked = userSettings.OpenTortoiseGitAfterBuild;
-            chkOpenOutputFolderAfterBuild.Checked = userSettings.OpenOutputDirectoryAfterBuild;
         }
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
         {
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
             {
-                //folderBrowserDialog.Description = "Select the /source/-folder that contains the .sln file";
                 folderBrowserDialog.ShowNewFolderButton = false;
 
                 DialogResult result = folderBrowserDialog.ShowDialog();
@@ -65,7 +64,8 @@ namespace TrainingManagerBuilder
                     else
                     {
                         MessageBox.Show("The selected folder does not contain a valid solution file (.sln).\nPlease select a correct folder.",
-                            "Invalid Folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            "Invalid Folder",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
                         btnBuildAndPackage.Enabled = false;
                     }
                 }
@@ -130,8 +130,19 @@ namespace TrainingManagerBuilder
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        public void SetTimersToWaiting()
+        {
+            string waiting = "Waiting...";
+            lblElapsedTimeFileVersion.Text = waiting;
+            lblElapsedTimeTM.Text = waiting;
+            lblElapsedTimeWeb.Text = waiting;
+            lblElapsedTimeMove.Text = waiting;
+            lblElapsedTimeInstaller.Text = waiting;
+        }
         private async void btnBuildAndPackage_Click(object sender, EventArgs e)
         {
+            SetTimersToWaiting();
             Stopwatch totalStopwatch = new Stopwatch();
             totalStopwatch.Start();
             LockControls();
@@ -372,15 +383,15 @@ namespace TrainingManagerBuilder
 
         private void chkOpenGitAfterBuild_CheckedChanged(object sender, EventArgs e)
         {
-            userSettings.OpenTortoiseGitAfterBuild = chkOpenGitAfterBuild.Checked;
-            userSettings.SaveSettings();
+            settings.OpenTortoiseGitAfterBuild = chkOpenGitAfterBuild.Checked;
+            settings.SaveSettings();
 
         }
 
         private void chkOpenOutputFolderAfterBuild_CheckedChanged(object sender, EventArgs e)
         {
-            userSettings.OpenOutputDirectoryAfterBuild = chkOpenOutputFolderAfterBuild.Checked;
-            userSettings.SaveSettings();
+            settings.OpenOutputDirectoryAfterBuild = chkOpenOutputFolderAfterBuild.Checked;
+            settings.SaveSettings();
         }
     }
 }

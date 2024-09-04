@@ -44,21 +44,21 @@ public class ZipUtilities
 
         try
         {
-            // Ta bort den gamla filen om den finns
+            // Erase the old file if it exists
             if (File.Exists(oldFilePath))
             {
                 File.Delete(oldFilePath);
                 Logger.Log($"Deleted old file: {oldFilePath}");
             }
 
-            // Ta bort den nya filen om den redan finns
+            // Erase the new file if it exists
             if (File.Exists(newFilePath))
             {
                 File.Delete(newFilePath);
                 Logger.Log($"Deleted existing new file: {newFilePath}");
             }
 
-            // Kopiera den nya zip-filen till installer-mappen
+            // Copy the new file to the installer path
             File.Copy(newZipFilePath, newFilePath);
             Logger.Log($"Copied new file: {newZipFilePath} to {newFilePath}");
         }

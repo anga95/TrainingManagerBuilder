@@ -204,15 +204,17 @@
             // 
             // progressBarUpdateFileVersions
             // 
-            progressBarUpdateFileVersions.Location = new Point(405, 171);
+            progressBarUpdateFileVersions.Anchor = AnchorStyles.Left;
+            progressBarUpdateFileVersions.Location = new Point(445, 220);
             progressBarUpdateFileVersions.Name = "progressBarUpdateFileVersions";
             progressBarUpdateFileVersions.Size = new Size(127, 23);
             progressBarUpdateFileVersions.TabIndex = 18;
             // 
             // lblProgressVersions
             // 
+            lblProgressVersions.Anchor = AnchorStyles.Left;
             lblProgressVersions.AutoSize = true;
-            lblProgressVersions.Location = new Point(287, 179);
+            lblProgressVersions.Location = new Point(327, 228);
             lblProgressVersions.Name = "lblProgressVersions";
             lblProgressVersions.Size = new Size(112, 15);
             lblProgressVersions.TabIndex = 19;
@@ -221,15 +223,15 @@
             // lblProgressTM
             // 
             lblProgressTM.AutoSize = true;
-            lblProgressTM.Location = new Point(303, 225);
+            lblProgressTM.Location = new Point(343, 257);
             lblProgressTM.Name = "lblProgressTM";
-            lblProgressTM.Size = new Size(94, 15);
+            lblProgressTM.Size = new Size(95, 15);
             lblProgressTM.TabIndex = 21;
-            lblProgressTM.Text = "Build and zip Tm";
+            lblProgressTM.Text = "Build and zip TM";
             // 
             // progressBarTM
             // 
-            progressBarTM.Location = new Point(405, 217);
+            progressBarTM.Location = new Point(445, 249);
             progressBarTM.Name = "progressBarTM";
             progressBarTM.Size = new Size(127, 23);
             progressBarTM.TabIndex = 20;
@@ -237,7 +239,7 @@
             // lblProgressWeb
             // 
             lblProgressWeb.AutoSize = true;
-            lblProgressWeb.Location = new Point(297, 254);
+            lblProgressWeb.Location = new Point(337, 286);
             lblProgressWeb.Name = "lblProgressWeb";
             lblProgressWeb.Size = new Size(102, 15);
             lblProgressWeb.TabIndex = 23;
@@ -245,7 +247,7 @@
             // 
             // progressBarWeb
             // 
-            progressBarWeb.Location = new Point(405, 246);
+            progressBarWeb.Location = new Point(445, 278);
             progressBarWeb.Name = "progressBarWeb";
             progressBarWeb.Size = new Size(127, 23);
             progressBarWeb.TabIndex = 22;
@@ -253,7 +255,7 @@
             // lblProgressMoveZips
             // 
             lblProgressMoveZips.AutoSize = true;
-            lblProgressMoveZips.Location = new Point(244, 301);
+            lblProgressMoveZips.Location = new Point(284, 315);
             lblProgressMoveZips.Name = "lblProgressMoveZips";
             lblProgressMoveZips.Size = new Size(155, 15);
             lblProgressMoveZips.TabIndex = 25;
@@ -261,7 +263,7 @@
             // 
             // progressBarMove
             // 
-            progressBarMove.Location = new Point(405, 293);
+            progressBarMove.Location = new Point(445, 307);
             progressBarMove.Name = "progressBarMove";
             progressBarMove.Size = new Size(127, 23);
             progressBarMove.TabIndex = 24;
@@ -269,7 +271,7 @@
             // lblProgressInstaller
             // 
             lblProgressInstaller.AutoSize = true;
-            lblProgressInstaller.Location = new Point(278, 343);
+            lblProgressInstaller.Location = new Point(318, 344);
             lblProgressInstaller.Name = "lblProgressInstaller";
             lblProgressInstaller.Size = new Size(122, 15);
             lblProgressInstaller.TabIndex = 27;
@@ -277,15 +279,16 @@
             // 
             // progressBarInstaller
             // 
-            progressBarInstaller.Location = new Point(405, 335);
+            progressBarInstaller.Location = new Point(445, 336);
             progressBarInstaller.Name = "progressBarInstaller";
             progressBarInstaller.Size = new Size(127, 23);
             progressBarInstaller.TabIndex = 26;
             // 
             // lblElapsedTimeFileVersion
             // 
+            lblElapsedTimeFileVersion.Anchor = AnchorStyles.Left;
             lblElapsedTimeFileVersion.AutoSize = true;
-            lblElapsedTimeFileVersion.Location = new Point(538, 179);
+            lblElapsedTimeFileVersion.Location = new Point(578, 228);
             lblElapsedTimeFileVersion.Name = "lblElapsedTimeFileVersion";
             lblElapsedTimeFileVersion.Size = new Size(48, 15);
             lblElapsedTimeFileVersion.TabIndex = 29;
@@ -294,7 +297,7 @@
             // lblElapsedTimeTM
             // 
             lblElapsedTimeTM.AutoSize = true;
-            lblElapsedTimeTM.Location = new Point(538, 225);
+            lblElapsedTimeTM.Location = new Point(578, 257);
             lblElapsedTimeTM.Name = "lblElapsedTimeTM";
             lblElapsedTimeTM.Size = new Size(48, 15);
             lblElapsedTimeTM.TabIndex = 30;
@@ -303,7 +306,7 @@
             // lblElapsedTimeWeb
             // 
             lblElapsedTimeWeb.AutoSize = true;
-            lblElapsedTimeWeb.Location = new Point(538, 254);
+            lblElapsedTimeWeb.Location = new Point(578, 286);
             lblElapsedTimeWeb.Name = "lblElapsedTimeWeb";
             lblElapsedTimeWeb.Size = new Size(48, 15);
             lblElapsedTimeWeb.TabIndex = 31;
@@ -312,7 +315,7 @@
             // lblElapsedTimeMove
             // 
             lblElapsedTimeMove.AutoSize = true;
-            lblElapsedTimeMove.Location = new Point(538, 301);
+            lblElapsedTimeMove.Location = new Point(578, 315);
             lblElapsedTimeMove.Name = "lblElapsedTimeMove";
             lblElapsedTimeMove.Size = new Size(48, 15);
             lblElapsedTimeMove.TabIndex = 32;
@@ -321,7 +324,7 @@
             // lblElapsedTimeInstaller
             // 
             lblElapsedTimeInstaller.AutoSize = true;
-            lblElapsedTimeInstaller.Location = new Point(538, 343);
+            lblElapsedTimeInstaller.Location = new Point(578, 344);
             lblElapsedTimeInstaller.Name = "lblElapsedTimeInstaller";
             lblElapsedTimeInstaller.Size = new Size(48, 15);
             lblElapsedTimeInstaller.TabIndex = 33;

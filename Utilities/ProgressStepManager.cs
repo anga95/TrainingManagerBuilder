@@ -80,33 +80,9 @@ public class ProgressStepManager
         }
     }
 
-    public void SetStepLabel(string text)
-    {
-        if (stepLabel.InvokeRequired)
-        {
-            stepLabel.Invoke(new Action(() => stepLabel.Text = text));
-        }
-        else
-        {
-            stepLabel.Text = text;
-        }
-    }
-
-    public void SetStatus(string text)
-    {
-        if (statusLabel.InvokeRequired)
-        {
-            statusLabel.Invoke(new Action(() => statusLabel.Text = text));
-        }
-        else
-        {
-            statusLabel.Text = text;
-        }
-    }
     public void SetWaiting()
     {
         timerLabel.Text = "Waiting...";
-        statusLabel.Text = "Waiting";
     }
 
     public void ResetProgressBar()

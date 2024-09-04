@@ -26,6 +26,7 @@ public class BuildManager
 
     public async Task BuildAndPackage(string outputDirectory, string sourcePath, string oldVersion, string newVersion)
     {
+        SetTimersToWaiting();
         ResetProgressBars();
         Stopwatch totalStopwatch = new Stopwatch();
         totalStopwatch.Start();
@@ -182,7 +183,14 @@ public class BuildManager
         {
             step.ResetProgressBar();
         }
+    }
 
+    private void SetTimersToWaiting()
+    {
+        foreach (var step in progressSteps.Values)
+        {
+            step.SetWaiting();
+        }
     }
 
     private void CheckAndWaitForOtherProcesses()

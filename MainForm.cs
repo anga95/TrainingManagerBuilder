@@ -105,32 +105,7 @@ namespace TrainingManagerBuilder
                 }
             }
         }
-        private void UpdateVersionInFiles()
-        {
-            try
-            {
-                string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
-                versionManager.UpdateVersionInFiles(newVersion, progressBarUpdateFileVersions);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private async Task UpdateVersionInFilesAsync()
-        {
-            try
-            {
-                string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
-                await versionManager.UpdateVersionInFilesAsync(newVersion, progressBarUpdateFileVersions);
-                Logger.Log($"File versions updated to {newVersion}");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Logger.LogError($"Error while updating file versions: {ex.Message}");
-            }
-        }
+
 
         public void SetTimersToWaiting()
         {
@@ -144,8 +119,6 @@ namespace TrainingManagerBuilder
 
         private async void btnBuildAndPackage_Click(object sender, EventArgs e)
         {
-            SetTimersToWaiting();
-            ResetProgressBars();
             LockControls();
 
             string oldVersion = $"{txtCurrentMajor.Text}.{txtCurrentMinor.Text}.{txtCurrentBuild.Text}.{txtCurrentRevision.Text}";

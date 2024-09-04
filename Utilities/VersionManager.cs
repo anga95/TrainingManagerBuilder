@@ -43,8 +43,19 @@ public class VersionManager
 
     public void UpdateVersionInFiles(string newVersion, ProgressBar progressBar)
     {
-        progressBar.Maximum = filesToUpdate.Count;
-        progressBar.Value = 0;
+        if (progressBar.InvokeRequired)
+        {
+            progressBar.Invoke(new Action(() =>
+            {
+                progressBar.Maximum = filesToUpdate.Count;
+                progressBar.Value = 0;
+            }));
+        }
+        else
+        {
+            progressBar.Maximum = filesToUpdate.Count;
+            progressBar.Value = 0;
+        }
 
         Logger.LogNewSection($"Starting version update to {newVersion}");
         var logBuilder = new StringBuilder();
@@ -78,7 +89,14 @@ public class VersionManager
                 Logger.LogError($"Failed to update {file}: {ex.Message}");
             }
 
-            progressBar.Value += 1;
+            if (progressBar.InvokeRequired)
+            {
+                progressBar.Invoke(new Action(() => progressBar.Value += 1));
+            }
+            else
+            {
+                progressBar.Value += 1;
+            }
         }
 
         Logger.Log(logBuilder.ToString());
@@ -88,5 +106,10 @@ public class VersionManager
     {
         int nextRevision = currentRevision + 1;
         return (currentMajor, currentMinor, currentBuild, nextRevision);
+    }
+
+    public async Task UpdateVersionInFilesAsync(string newVersion, ProgressBar progressBar)
+    {
+        await Task.Run(() => UpdateVersionInFiles(newVersion, progressBar));
     }
 }

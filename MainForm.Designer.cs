@@ -47,22 +47,27 @@
             txtOutputDestination = new Label();
             btnBrowseOutput = new Button();
             progressBarUpdateFileVersions = new ProgressBar();
-            lblProgressVersions = new Label();
-            lblProgressTM = new Label();
+            lblUpdateFileVersions = new Label();
+            lblBuildTM = new Label();
             progressBarTM = new ProgressBar();
-            lblProgressWeb = new Label();
+            lblBuildWeb = new Label();
             progressBarWeb = new ProgressBar();
-            lblProgressMoveZips = new Label();
-            progressBarMove = new ProgressBar();
-            lblProgressInstaller = new Label();
+            lblCopyZips = new Label();
+            progressBarCopyZip = new ProgressBar();
+            lblBuildInstaller = new Label();
             progressBarInstaller = new ProgressBar();
             lblElapsedTimeFileVersion = new Label();
             lblElapsedTimeTM = new Label();
             lblElapsedTimeWeb = new Label();
-            lblElapsedTimeMove = new Label();
+            lblElapsedTimeCopyZips = new Label();
             lblElapsedTimeInstaller = new Label();
             chkOpenGitAfterBuild = new CheckBox();
             chkOpenOutputFolderAfterBuild = new CheckBox();
+            lblStatusFileVersion = new Label();
+            lblStatusTM = new Label();
+            lblStatusWeb = new Label();
+            lblStatusCopyZips = new Label();
+            lblStatusInstaller = new Label();
             SuspendLayout();
             // 
             // lblSourcePath
@@ -205,81 +210,81 @@
             // progressBarUpdateFileVersions
             // 
             progressBarUpdateFileVersions.Anchor = AnchorStyles.Left;
-            progressBarUpdateFileVersions.Location = new Point(445, 220);
+            progressBarUpdateFileVersions.Location = new Point(398, 223);
             progressBarUpdateFileVersions.Name = "progressBarUpdateFileVersions";
             progressBarUpdateFileVersions.Size = new Size(127, 23);
             progressBarUpdateFileVersions.TabIndex = 18;
             // 
-            // lblProgressVersions
+            // lblUpdateFileVersions
             // 
-            lblProgressVersions.Anchor = AnchorStyles.Left;
-            lblProgressVersions.AutoSize = true;
-            lblProgressVersions.Location = new Point(327, 228);
-            lblProgressVersions.Name = "lblProgressVersions";
-            lblProgressVersions.Size = new Size(112, 15);
-            lblProgressVersions.TabIndex = 19;
-            lblProgressVersions.Text = "Update File Versions";
+            lblUpdateFileVersions.Anchor = AnchorStyles.Left;
+            lblUpdateFileVersions.AutoSize = true;
+            lblUpdateFileVersions.Location = new Point(280, 231);
+            lblUpdateFileVersions.Name = "lblUpdateFileVersions";
+            lblUpdateFileVersions.Size = new Size(112, 15);
+            lblUpdateFileVersions.TabIndex = 19;
+            lblUpdateFileVersions.Text = "Update File Versions";
             // 
-            // lblProgressTM
+            // lblBuildTM
             // 
-            lblProgressTM.AutoSize = true;
-            lblProgressTM.Location = new Point(343, 257);
-            lblProgressTM.Name = "lblProgressTM";
-            lblProgressTM.Size = new Size(95, 15);
-            lblProgressTM.TabIndex = 21;
-            lblProgressTM.Text = "Build and zip TM";
+            lblBuildTM.AutoSize = true;
+            lblBuildTM.Location = new Point(296, 260);
+            lblBuildTM.Name = "lblBuildTM";
+            lblBuildTM.Size = new Size(95, 15);
+            lblBuildTM.TabIndex = 21;
+            lblBuildTM.Text = "Build and zip TM";
             // 
             // progressBarTM
             // 
-            progressBarTM.Location = new Point(445, 249);
+            progressBarTM.Location = new Point(398, 252);
             progressBarTM.Name = "progressBarTM";
             progressBarTM.Size = new Size(127, 23);
             progressBarTM.TabIndex = 20;
             // 
-            // lblProgressWeb
+            // lblBuildWeb
             // 
-            lblProgressWeb.AutoSize = true;
-            lblProgressWeb.Location = new Point(337, 286);
-            lblProgressWeb.Name = "lblProgressWeb";
-            lblProgressWeb.Size = new Size(102, 15);
-            lblProgressWeb.TabIndex = 23;
-            lblProgressWeb.Text = "Build and zip Web";
+            lblBuildWeb.AutoSize = true;
+            lblBuildWeb.Location = new Point(290, 289);
+            lblBuildWeb.Name = "lblBuildWeb";
+            lblBuildWeb.Size = new Size(102, 15);
+            lblBuildWeb.TabIndex = 23;
+            lblBuildWeb.Text = "Build and zip Web";
             // 
             // progressBarWeb
             // 
-            progressBarWeb.Location = new Point(445, 278);
+            progressBarWeb.Location = new Point(398, 281);
             progressBarWeb.Name = "progressBarWeb";
             progressBarWeb.Size = new Size(127, 23);
             progressBarWeb.TabIndex = 22;
             // 
-            // lblProgressMoveZips
+            // lblCopyZips
             // 
-            lblProgressMoveZips.AutoSize = true;
-            lblProgressMoveZips.Location = new Point(284, 315);
-            lblProgressMoveZips.Name = "lblProgressMoveZips";
-            lblProgressMoveZips.Size = new Size(155, 15);
-            lblProgressMoveZips.TabIndex = 25;
-            lblProgressMoveZips.Text = "Add TM and web to Installer";
+            lblCopyZips.AutoSize = true;
+            lblCopyZips.Location = new Point(237, 318);
+            lblCopyZips.Name = "lblCopyZips";
+            lblCopyZips.Size = new Size(155, 15);
+            lblCopyZips.TabIndex = 25;
+            lblCopyZips.Text = "Add TM and web to Installer";
             // 
-            // progressBarMove
+            // progressBarCopyZip
             // 
-            progressBarMove.Location = new Point(445, 307);
-            progressBarMove.Name = "progressBarMove";
-            progressBarMove.Size = new Size(127, 23);
-            progressBarMove.TabIndex = 24;
+            progressBarCopyZip.Location = new Point(398, 310);
+            progressBarCopyZip.Name = "progressBarCopyZip";
+            progressBarCopyZip.Size = new Size(127, 23);
+            progressBarCopyZip.TabIndex = 24;
             // 
-            // lblProgressInstaller
+            // lblBuildInstaller
             // 
-            lblProgressInstaller.AutoSize = true;
-            lblProgressInstaller.Location = new Point(318, 344);
-            lblProgressInstaller.Name = "lblProgressInstaller";
-            lblProgressInstaller.Size = new Size(122, 15);
-            lblProgressInstaller.TabIndex = 27;
-            lblProgressInstaller.Text = "Build and zip Installer ";
+            lblBuildInstaller.AutoSize = true;
+            lblBuildInstaller.Location = new Point(271, 347);
+            lblBuildInstaller.Name = "lblBuildInstaller";
+            lblBuildInstaller.Size = new Size(122, 15);
+            lblBuildInstaller.TabIndex = 27;
+            lblBuildInstaller.Text = "Build and zip Installer ";
             // 
             // progressBarInstaller
             // 
-            progressBarInstaller.Location = new Point(445, 336);
+            progressBarInstaller.Location = new Point(398, 339);
             progressBarInstaller.Name = "progressBarInstaller";
             progressBarInstaller.Size = new Size(127, 23);
             progressBarInstaller.TabIndex = 26;
@@ -288,7 +293,7 @@
             // 
             lblElapsedTimeFileVersion.Anchor = AnchorStyles.Left;
             lblElapsedTimeFileVersion.AutoSize = true;
-            lblElapsedTimeFileVersion.Location = new Point(578, 228);
+            lblElapsedTimeFileVersion.Location = new Point(531, 231);
             lblElapsedTimeFileVersion.Name = "lblElapsedTimeFileVersion";
             lblElapsedTimeFileVersion.Size = new Size(48, 15);
             lblElapsedTimeFileVersion.TabIndex = 29;
@@ -297,7 +302,7 @@
             // lblElapsedTimeTM
             // 
             lblElapsedTimeTM.AutoSize = true;
-            lblElapsedTimeTM.Location = new Point(578, 257);
+            lblElapsedTimeTM.Location = new Point(531, 260);
             lblElapsedTimeTM.Name = "lblElapsedTimeTM";
             lblElapsedTimeTM.Size = new Size(48, 15);
             lblElapsedTimeTM.TabIndex = 30;
@@ -306,25 +311,25 @@
             // lblElapsedTimeWeb
             // 
             lblElapsedTimeWeb.AutoSize = true;
-            lblElapsedTimeWeb.Location = new Point(578, 286);
+            lblElapsedTimeWeb.Location = new Point(531, 289);
             lblElapsedTimeWeb.Name = "lblElapsedTimeWeb";
             lblElapsedTimeWeb.Size = new Size(48, 15);
             lblElapsedTimeWeb.TabIndex = 31;
             lblElapsedTimeWeb.Text = "Waiting";
             // 
-            // lblElapsedTimeMove
+            // lblElapsedTimeCopyZips
             // 
-            lblElapsedTimeMove.AutoSize = true;
-            lblElapsedTimeMove.Location = new Point(578, 315);
-            lblElapsedTimeMove.Name = "lblElapsedTimeMove";
-            lblElapsedTimeMove.Size = new Size(48, 15);
-            lblElapsedTimeMove.TabIndex = 32;
-            lblElapsedTimeMove.Text = "Waiting";
+            lblElapsedTimeCopyZips.AutoSize = true;
+            lblElapsedTimeCopyZips.Location = new Point(531, 318);
+            lblElapsedTimeCopyZips.Name = "lblElapsedTimeCopyZips";
+            lblElapsedTimeCopyZips.Size = new Size(48, 15);
+            lblElapsedTimeCopyZips.TabIndex = 32;
+            lblElapsedTimeCopyZips.Text = "Waiting";
             // 
             // lblElapsedTimeInstaller
             // 
             lblElapsedTimeInstaller.AutoSize = true;
-            lblElapsedTimeInstaller.Location = new Point(578, 344);
+            lblElapsedTimeInstaller.Location = new Point(531, 347);
             lblElapsedTimeInstaller.Name = "lblElapsedTimeInstaller";
             lblElapsedTimeInstaller.Size = new Size(48, 15);
             lblElapsedTimeInstaller.TabIndex = 33;
@@ -354,27 +359,72 @@
             chkOpenOutputFolderAfterBuild.UseVisualStyleBackColor = true;
             chkOpenOutputFolderAfterBuild.CheckedChanged += chkOpenOutputFolderAfterBuild_CheckedChanged;
             // 
+            // lblStatusFileVersion
+            // 
+            lblStatusFileVersion.AutoSize = true;
+            lblStatusFileVersion.Location = new Point(585, 233);
+            lblStatusFileVersion.Name = "lblStatusFileVersion";
+            lblStatusFileVersion.Size = new Size(0, 15);
+            lblStatusFileVersion.TabIndex = 36;
+            // 
+            // lblStatusTM
+            // 
+            lblStatusTM.AutoSize = true;
+            lblStatusTM.Location = new Point(585, 260);
+            lblStatusTM.Name = "lblStatusTM";
+            lblStatusTM.Size = new Size(0, 15);
+            lblStatusTM.TabIndex = 37;
+            // 
+            // lblStatusWeb
+            // 
+            lblStatusWeb.AutoSize = true;
+            lblStatusWeb.Location = new Point(585, 289);
+            lblStatusWeb.Name = "lblStatusWeb";
+            lblStatusWeb.Size = new Size(0, 15);
+            lblStatusWeb.TabIndex = 38;
+            // 
+            // lblStatusCopyZips
+            // 
+            lblStatusCopyZips.AutoSize = true;
+            lblStatusCopyZips.Location = new Point(586, 318);
+            lblStatusCopyZips.Name = "lblStatusCopyZips";
+            lblStatusCopyZips.Size = new Size(0, 15);
+            lblStatusCopyZips.TabIndex = 39;
+            // 
+            // lblStatusInstaller
+            // 
+            lblStatusInstaller.AutoSize = true;
+            lblStatusInstaller.Location = new Point(585, 347);
+            lblStatusInstaller.Name = "lblStatusInstaller";
+            lblStatusInstaller.Size = new Size(0, 15);
+            lblStatusInstaller.TabIndex = 40;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(647, 382);
+            ClientSize = new Size(726, 382);
+            Controls.Add(lblStatusInstaller);
+            Controls.Add(lblStatusCopyZips);
+            Controls.Add(lblStatusWeb);
+            Controls.Add(lblStatusTM);
+            Controls.Add(lblStatusFileVersion);
             Controls.Add(chkOpenOutputFolderAfterBuild);
             Controls.Add(chkOpenGitAfterBuild);
             Controls.Add(lblElapsedTimeInstaller);
-            Controls.Add(lblElapsedTimeMove);
+            Controls.Add(lblElapsedTimeCopyZips);
             Controls.Add(lblElapsedTimeWeb);
             Controls.Add(lblElapsedTimeTM);
             Controls.Add(lblElapsedTimeFileVersion);
-            Controls.Add(lblProgressInstaller);
+            Controls.Add(lblBuildInstaller);
             Controls.Add(progressBarInstaller);
-            Controls.Add(lblProgressMoveZips);
-            Controls.Add(progressBarMove);
-            Controls.Add(lblProgressWeb);
+            Controls.Add(lblCopyZips);
+            Controls.Add(progressBarCopyZip);
+            Controls.Add(lblBuildWeb);
             Controls.Add(progressBarWeb);
-            Controls.Add(lblProgressTM);
+            Controls.Add(lblBuildTM);
             Controls.Add(progressBarTM);
-            Controls.Add(lblProgressVersions);
+            Controls.Add(lblUpdateFileVersions);
             Controls.Add(progressBarUpdateFileVersions);
             Controls.Add(btnBrowseOutput);
             Controls.Add(txtOutputDestination);
@@ -420,21 +470,26 @@
         private Label txtOutputDestination;
         private Button btnBrowseOutput;
         private ProgressBar progressBarUpdateFileVersions;
-        private Label lblProgressVersions;
-        private Label lblProgressTM;
+        private Label lblUpdateFileVersions;
+        private Label lblBuildTM;
         private ProgressBar progressBarTM;
-        private Label lblProgressWeb;
+        private Label lblBuildWeb;
         private ProgressBar progressBarWeb;
-        private Label lblProgressMoveZips;
-        private ProgressBar progressBarMove;
-        private Label lblProgressInstaller;
+        private Label lblCopyZips;
+        private ProgressBar progressBarCopyZip;
+        private Label lblBuildInstaller;
         private ProgressBar progressBarInstaller;
         private Label lblElapsedTimeFileVersion;
         private Label lblElapsedTimeTM;
         private Label lblElapsedTimeWeb;
-        private Label lblElapsedTimeMove;
+        private Label lblElapsedTimeCopyZips;
         private Label lblElapsedTimeInstaller;
         private CheckBox chkOpenGitAfterBuild;
         private CheckBox chkOpenOutputFolderAfterBuild;
+        private Label lblStatusFileVersion;
+        private Label lblStatusTM;
+        private Label lblStatusWeb;
+        private Label lblStatusCopyZips;
+        private Label lblStatusInstaller;
     }
 }

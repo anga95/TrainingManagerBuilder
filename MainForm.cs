@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using TrainingManagerBuilder.Builders;
 using TrainingManagerBuilder.Utilities;
 
 namespace TrainingManagerBuilder
@@ -7,10 +6,10 @@ namespace TrainingManagerBuilder
     public partial class MainForm : Form
     {
         private VersionManager versionManager;
-        private IBuilder tmBuilder, tmWebsiteBuilder, tmInstallerBuilder;
+
         private ZipUtilities zipUtilities;
-        private ProcessTimerManager processTimerManager;
         private UserSettings settings;
+        private Dictionary<string, ProgressStepManager> progressSteps;
 
         public MainForm()
         {
@@ -23,17 +22,16 @@ namespace TrainingManagerBuilder
 
             chkOpenGitAfterBuild.Enabled = settings.IsTortoiseGitAvailable;
             chkOpenGitAfterBuild.Checked = settings.OpenTortoiseGitAfterBuild;
-            chkOpenOutputFolderAfterBuild.Enabled = settings.OpenOutputDirectoryAfterBuild;
+            chkOpenOutputFolderAfterBuild.Checked = settings.OpenOutputDirectoryAfterBuild;
 
-
-            processTimerManager = new ProcessTimerManager(new Dictionary<ProgressBar, Label>
+            progressSteps = new Dictionary<string, ProgressStepManager>
             {
-                { progressBarUpdateFileVersions, lblElapsedTimeFileVersion },
-                { progressBarTM, lblElapsedTimeTM },
-                { progressBarWeb, lblElapsedTimeWeb },
-                { progressBarMove, lblElapsedTimeMove },
-                { progressBarInstaller, lblElapsedTimeInstaller }
-            });
+                { "UpdateFileVersions", new ProgressStepManager(lblUpdateFileVersions, progressBarUpdateFileVersions, lblElapsedTimeFileVersion, lblStatusFileVersion) },
+                { "BuildTM", new ProgressStepManager(lblBuildTM, progressBarTM, lblElapsedTimeTM, lblStatusTM) },
+                { "BuildWeb", new ProgressStepManager(lblBuildWeb, progressBarWeb, lblElapsedTimeWeb, lblStatusWeb) },
+                { "copyZips", new ProgressStepManager(lblCopyZips, progressBarCopyZip, lblElapsedTimeCopyZips, lblStatusCopyZips) },
+                { "BuildInstaller", new ProgressStepManager(lblBuildInstaller, progressBarInstaller, lblElapsedTimeInstaller, lblStatusInstaller) }
+            };
 
             zipUtilities = new ZipUtilities();
         }
@@ -57,7 +55,6 @@ namespace TrainingManagerBuilder
                         txtOutputPath.Text = @"C:\Users\andgab\Downloads";
 #endif
                         LoadCurrentVersion();
-                        InitBuilders();
 
                         btnBuildAndPackage.Enabled = true;
                     }
@@ -77,15 +74,6 @@ namespace TrainingManagerBuilder
             // Check if the folder contains a .sln file
             var solutionFiles = Directory.GetFiles(folderPath, "*.sln");
             return solutionFiles.Length > 0;
-        }
-
-        private void InitBuilders()
-        {
-            string solutionPath = Path.Combine(txtSourcePath.Text, "TrainingManager.sln");
-
-            tmBuilder = new BuildTM(solutionPath);
-            tmWebsiteBuilder = new BuildWebsite(solutionPath);
-            tmInstallerBuilder = new BuildTMInstaller(solutionPath);
         }
 
         private void LoadCurrentVersion()
@@ -116,7 +104,6 @@ namespace TrainingManagerBuilder
                     txtOutputPath.Text = folderBrowserDialog.SelectedPath;
                 }
             }
-
         }
         private void UpdateVersionInFiles()
         {
@@ -130,6 +117,20 @@ namespace TrainingManagerBuilder
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private async Task UpdateVersionInFilesAsync()
+        {
+            try
+            {
+                string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
+                await versionManager.UpdateVersionInFilesAsync(newVersion, progressBarUpdateFileVersions);
+                Logger.Log($"File versions updated to {newVersion}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Logger.LogError($"Error while updating file versions: {ex.Message}");
+            }
+        }
 
         public void SetTimersToWaiting()
         {
@@ -137,187 +138,92 @@ namespace TrainingManagerBuilder
             lblElapsedTimeFileVersion.Text = waiting;
             lblElapsedTimeTM.Text = waiting;
             lblElapsedTimeWeb.Text = waiting;
-            lblElapsedTimeMove.Text = waiting;
+            lblElapsedTimeCopyZips.Text = waiting;
             lblElapsedTimeInstaller.Text = waiting;
         }
+
         private async void btnBuildAndPackage_Click(object sender, EventArgs e)
         {
             SetTimersToWaiting();
-            Stopwatch totalStopwatch = new Stopwatch();
-            totalStopwatch.Start();
+            ResetProgressBars();
             LockControls();
+
             string oldVersion = $"{txtCurrentMajor.Text}.{txtCurrentMinor.Text}.{txtCurrentBuild.Text}.{txtCurrentRevision.Text}";
             string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
+
             try
             {
+                BuildManager buildManager = new BuildManager(txtSourcePath.Text, zipUtilities, progressSteps);
 
-                KillAllMSBuildProcesses();
-                SetProgressBars();
+                // Build and package the project
+                await buildManager.BuildAndPackage(
+                    txtOutputPath.Text,
+                    txtSourcePath.Text,
+                    oldVersion,
+                    newVersion
+                );
 
-                processTimerManager.StartTimer(progressBarUpdateFileVersions);
-                UpdateVersionInFiles();
-                processTimerManager.StopTimer(progressBarUpdateFileVersions);
-
-
-                string outputDirectory = txtOutputPath.Text;
-                string versionOutputDirectory = Path.Combine(outputDirectory, $"{newVersion}");
-                if (!Directory.Exists(versionOutputDirectory))
+                // Open TortoiseGit after build, if selected
+                if (chkOpenGitAfterBuild.Checked)
                 {
-                    Directory.CreateDirectory(versionOutputDirectory);
+                    TortoiseGitHelper gitHelper = new TortoiseGitHelper();
+                    gitHelper.OpenCommitDialog(txtSourcePath.Text, newVersion);
                 }
 
-
-                // Step 2: Build and zip TM sequentially
-                CheckAndWaitForOtherProcesses();
-                string tmReleasePath = Path.Combine(txtSourcePath.Text, @"bin\Release");
-                processTimerManager.StartTimer(progressBarTM);
-                string tmZipPath = await Task.Run(() =>
-                    BuildAndZipProject(tmBuilder, tmReleasePath, versionOutputDirectory, $"TM {newVersion}.zip", progressBarTM));
-                processTimerManager.StopTimer(progressBarTM);
-
-
-                // Step 3: Build and zip TM Reports Website sequentially
-                CheckAndWaitForOtherProcesses();
-                string websiteReleasePath = Path.Combine(txtSourcePath.Text, @"TMReportsWebsite");
-                processTimerManager.StartTimer(progressBarWeb);
-                string websiteZipPath = await Task.Run(() =>
-                    BuildAndZipProject(tmWebsiteBuilder, websiteReleasePath, versionOutputDirectory, $"TM Reports Website {newVersion}.zip", progressBarWeb));
-                processTimerManager.StopTimer(progressBarWeb);
-
-
-                // Step 4: Replace zip files in TMInstaller
-                processTimerManager.StartTimer(progressBarMove);
-                await ReplaceInstallerZipfiles(tmZipPath, oldVersion, newVersion, websiteZipPath);
-                processTimerManager.StopTimer(progressBarMove);
-
-
-                // Step 5: Build and zip TM Installer
-                CheckAndWaitForOtherProcesses();
-                string installerReleasePath = Path.Combine(txtSourcePath.Text, @"TMInstaller\bin\Release");
-                processTimerManager.StartTimer(progressBarInstaller);
-                await Task.Run(() =>
-                    BuildAndZipProject(tmInstallerBuilder, installerReleasePath, versionOutputDirectory, $"TM Installer {newVersion}.zip", progressBarInstaller));
-                processTimerManager.StopTimer(progressBarInstaller);
-
-                // step 6: Add Training Manager Release Notes.txt
-                if (!File.Exists(Path.Combine(versionOutputDirectory, "Training Manager Release Notes.txt")))
+                // Open output folder after build, if selected
+                if (chkOpenOutputFolderAfterBuild.Checked)
                 {
-                    string releaseNotesPath = Path.Combine(versionOutputDirectory, "Training Manager Release Notes.txt");
-                    File.Copy(Path.Combine(txtSourcePath.Text, "TMInstaller", "Documents", "Training Manager Release Notes.txt"), releaseNotesPath);
+                    OpenOutputFolder(txtOutputPath.Text);
                 }
-
-                totalStopwatch.Stop();
-
-                // Log success and total time
-                Logger.Log($"Build, package, and installer update completed successfully.\n" +
-                           $"Total time for BuildAndPackage process: {totalStopwatch.Elapsed.TotalMinutes:F2} minutes.");
             }
             catch (Exception ex)
             {
-                totalStopwatch.Stop();
-                Logger.LogError($"Build, package, and installer update failed after {totalStopwatch.Elapsed.TotalMinutes:F2} minutes. Error: {ex.Message}");
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
-                totalStopwatch.Stop();
                 UnlockControls();
+            }
 
-                if (chkOpenGitAfterBuild.Checked)
-                {
-                    TortoiseGitHelper gitHelper = new TortoiseGitHelper();
-                    string repositoryPath = txtSourcePath.Text;
-                    gitHelper.OpenCommitDialog(repositoryPath, newVersion);
-                }
+        }
 
-                if (chkOpenOutputFolderAfterBuild.Checked)
-                {
-                    try
-                    {
-                        OpenOutputFolder(txtOutputPath.Text);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError($"Failed to open output folder: {ex.Message}");
-                    }
-                }
+        private void SetControlState(bool isEnabled)
+        {
+            var controls = new List<Control>
+            {
+                btnBuildAndPackage, btnBrowseSource, btnBrowseOutput, txtSourcePath, txtOutputPath,
+                txtCurrentMajor, txtCurrentMinor, txtCurrentBuild, txtCurrentRevision,
+                txtNextMajor, txtNextMinor, txtNextBuild, txtNextRevision
+            };
+
+            foreach (var control in controls)
+            {
+                control.Enabled = isEnabled;
             }
         }
 
         private void LockControls()
         {
-            btnBuildAndPackage.Enabled = false;
-            btnBrowseSource.Enabled = false;
-            btnBrowseOutput.Enabled = false;
-            txtSourcePath.Enabled = false;
-            txtOutputPath.Enabled = false;
-            txtCurrentMajor.Enabled = false;
-            txtCurrentMinor.Enabled = false;
-            txtCurrentBuild.Enabled = false;
-            txtCurrentRevision.Enabled = false;
-            txtNextMajor.Enabled = false;
-            txtNextMinor.Enabled = false;
-            txtNextBuild.Enabled = false;
-            txtNextRevision.Enabled = false;
-            //chkOpenGitAfterBuild.Enabled = false;
-            //chkOpenOutputFolderAfterBuild.Enabled = false;
+            SetControlState(false);
         }
 
         private void UnlockControls()
         {
-            btnBuildAndPackage.Enabled = true;
-            btnBrowseSource.Enabled = true;
-            btnBrowseOutput.Enabled = true;
-            txtSourcePath.Enabled = true;
-            txtOutputPath.Enabled = true;
-            txtCurrentMajor.Enabled = true;
-            txtCurrentMinor.Enabled = true;
-            txtCurrentBuild.Enabled = true;
-            txtCurrentRevision.Enabled = true;
-            txtNextMajor.Enabled = true;
-            txtNextMinor.Enabled = true;
-            txtNextBuild.Enabled = true;
-            txtNextRevision.Enabled = true;
-            //chkOpenGitAfterBuild.Enabled = true;
-            //chkOpenOutputFolderAfterBuild.Enabled = true;
+            SetControlState(true);
         }
 
-        private void SetProgressBars()
+        private void ResetProgressBars()
         {
             progressBarTM.Value = 0;
             progressBarTM.Maximum = 2;
             progressBarWeb.Value = 0;
             progressBarWeb.Maximum = 2;
-            progressBarMove.Value = 0;
-            progressBarMove.Maximum = 2;
+            progressBarCopyZip.Value = 0;
+            progressBarCopyZip.Maximum = 2;
             progressBarInstaller.Value = 0;
             progressBarInstaller.Maximum = 2;
         }
 
-        private async Task ReplaceInstallerZipfiles(string tmZipPath, string oldVersion, string newVersion, string websiteZipPath)
-        {
-            string installerPath = Path.Combine(txtSourcePath.Text, @"TMInstaller");
-            await Task.Run(() => zipUtilities.ReplaceZipFile(installerPath, tmZipPath, oldVersion, newVersion, $"TM"));
-            SetProgressBarValue(progressBarMove, 1);
-            await Task.Run(() => zipUtilities.ReplaceZipFile(installerPath, websiteZipPath, oldVersion, newVersion, $"TM Reports Website"));
-            SetProgressBarValue(progressBarMove, 2);
-        }
-
-        private void CheckAndWaitForOtherProcesses()
-        {
-            var runningProcesses = Process.GetProcessesByName("MSBuild");
-            if (runningProcesses.Length > 0)
-            {
-                Logger.Log("Another MSBuild process is running. Waiting for it to finish...");
-
-                foreach (var process in runningProcesses)
-                {
-                    process.WaitForExit();
-                }
-
-                Logger.Log("MSBuild process finished. Continuing...");
-            }
-        }
         private void OpenOutputFolder(string folderPath)
         {
             if (Directory.Exists(folderPath))
@@ -329,56 +235,6 @@ namespace TrainingManagerBuilder
             {
                 Logger.LogError($"Could not open folder. Path does not exist: {folderPath}");
             }
-        }
-        private void SetProgressBarValue(ProgressBar progressBar, int value)
-        {
-            if (progressBar.InvokeRequired)
-            {
-                progressBar.Invoke(new Action(() => progressBar.Value = value));
-            }
-            else
-            {
-                progressBar.Value = value;
-            }
-        }
-        private void KillAllMSBuildProcesses()
-        {
-            var runningProcesses = Process.GetProcessesByName("MSBuild");
-            if (runningProcesses.Length > 0)
-            {
-                Logger.Log("Killing all running MSBuild processes...");
-
-                foreach (var process in runningProcesses)
-                {
-                    try
-                    {
-                        process.Kill();
-                        Logger.Log($"MSBuild process (PID: {process.Id}) terminated.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError($"Failed to terminate MSBuild process (PID: {process.Id}): {ex.Message}");
-                    }
-                }
-
-                Logger.Log("All MSBuild processes have been terminated.");
-            }
-            else
-            {
-                Logger.Log("No MSBuild processes were running.");
-            }
-        }
-
-        private string BuildAndZipProject(IBuilder builder, string releasePath, string outputDirectory, string zipFileName, ProgressBar progressBar)
-        {
-            builder.Build();
-            SetProgressBarValue(progressBar, 1);
-
-            string zipPath = Path.Combine(outputDirectory, zipFileName);
-            zipUtilities.ZipDirectory(releasePath, zipPath);
-            SetProgressBarValue(progressBar, 2);
-
-            return zipPath;
         }
 
         private void chkOpenGitAfterBuild_CheckedChanged(object sender, EventArgs e)

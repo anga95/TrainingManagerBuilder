@@ -21,6 +21,7 @@ This program is provided in a pre-built state, and you do not need to clone or b
 
 ### Required Tools for Users Without Visual Studio
 ***Note:*** this part is not completely tested yet. If you encounter any issues and find a solution, please update this section.
+
 To use this programs Build And Zip feature, ensure that you install the following components from `vs_BuildTools.exe`:
 - **.NET desktop build tools**
 - Ensure that **MSBuild** is selected during installation.

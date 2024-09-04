@@ -10,7 +10,7 @@ public class UserSettings
     private string msbuildPath;
     private string tortoiseGitPath;
 
-    private UserSettings(){}
+    private UserSettings() { }
 
     #region Singleton
     private static readonly object lockObject = new object();
@@ -83,19 +83,47 @@ public class UserSettings
 
     private string FindMSBuildPath()
     {
-        if (!string.IsNullOrEmpty(MSBuildPath) && File.Exists(MSBuildPath))
+        if (!string.IsNullOrEmpty(msbuildPath) && File.Exists(msbuildPath))
         {
-            Logger.Log($"Using saved MSBuild path: {MSBuildPath}");
-            return MSBuildPath;
+            Logger.Log($"Using saved MSBuild path: {msbuildPath}");
+            return msbuildPath;
         }
 
         // Try to find MSBuild.exe in PATH
         string msbuildInPath = FindMSBuildInPath();
         if (!string.IsNullOrEmpty(msbuildInPath))
         {
-            MSBuildPath = msbuildInPath;
+            msbuildPath = msbuildInPath;
             SaveSettings();
             return msbuildInPath;
+        }
+
+        // If MSBuild is not found in PATH, try to find it in common installation paths
+        List<string> potentialPaths = new List<string>
+        {
+            @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files (x86)\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe",
+            @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe"
+        };
+
+        foreach (string path in potentialPaths)
+        {
+            if (File.Exists(path))
+            {
+                Logger.Log($"MSBuild found at: {path}");
+                msbuildPath = path;
+                SaveSettings();
+                return path;
+            }
         }
 
         // Ask user to locate MSBuild.exe
@@ -112,7 +140,7 @@ public class UserSettings
 
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
-            MSBuildPath = openFileDialog.FileName;
+            msbuildPath = openFileDialog.FileName;
             SaveSettings();
             return openFileDialog.FileName;
         }

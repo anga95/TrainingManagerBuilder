@@ -1,5 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
 using JsonFormatting = Newtonsoft.Json.Formatting;
 
 public class UserSettings

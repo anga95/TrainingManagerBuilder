@@ -1,4 +1,6 @@
-﻿namespace TrainingManagerBuilder.Builders;
+﻿using System;
+using System.IO;
+
 
 public class BuildTMInstaller : Builder
 {

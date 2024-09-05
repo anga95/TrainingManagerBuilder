@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 
-namespace TrainingManagerBuilder.Builders;
 
 public abstract class Builder : IBuilder
 {

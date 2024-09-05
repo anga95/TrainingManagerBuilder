@@ -1,6 +1,4 @@
-﻿namespace TrainingManagerBuilder.Builders;
-
-public class BuildWebsite : Builder
+﻿public class BuildWebsite : Builder
 {
     public BuildWebsite(string solutionPath) : base(solutionPath, "TMReportsWebsite") { }
 

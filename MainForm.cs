@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using TrainingManagerBuilder.Utilities;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace TrainingManagerBuilder
 {

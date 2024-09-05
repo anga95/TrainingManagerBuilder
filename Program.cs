@@ -1,3 +1,6 @@
+using System;
+using System.Windows.Forms;
+
 namespace TrainingManagerBuilder
 {
     internal static class Program
@@ -9,7 +12,8 @@ namespace TrainingManagerBuilder
             try
             {
                 Logger.Log("Application started");
-                ApplicationConfiguration.Initialize();
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new MainForm());
                 Logger.Log("Application ended");
             }

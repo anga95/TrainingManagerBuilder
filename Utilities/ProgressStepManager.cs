@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 public class ProgressStepManager

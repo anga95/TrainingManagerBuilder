@@ -1,4 +1,8 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 public static class Logger
 {
@@ -72,10 +76,15 @@ public static class Logger
                 }
             }
         }
-        catch (Exception ex) when (ex is OperationCanceledException or IOException)
+        catch (OperationCanceledException ex)
+        {
+            Console.Error.WriteLine($"Logging was canceled: {ex.Message}");
+
+        }
+        catch (IOException ex)
         {
             // Logging canceled or I/O error occurred
-            Console.Error.WriteLine($"Logging failed or was canceled: {ex.Message}");
+            Console.Error.WriteLine($"Logging failed due to I/O error: {ex.Message}");
         }
     }
 

@@ -1,4 +1,7 @@
-﻿namespace TrainingManagerBuilder
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace TrainingManagerBuilder
 {
     partial class MainForm
     {

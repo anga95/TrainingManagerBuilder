@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
-using System.Drawing.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 public class TortoiseGitHelper
 {

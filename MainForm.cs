@@ -42,14 +42,16 @@ namespace TrainingManagerBuilder
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
         {
-            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+            using (var folderBrowser = new OpenFileDialog())
             {
-                folderBrowserDialog.ShowNewFolderButton = false;
+                folderBrowser.ValidateNames = false;
+                folderBrowser.CheckFileExists = false;
+                folderBrowser.CheckPathExists = true;
+                folderBrowser.FileName = "Select Folder";
 
-                DialogResult result = folderBrowserDialog.ShowDialog();
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+                if (folderBrowser.ShowDialog() == DialogResult.OK)
                 {
-                    txtSourcePath.Text = folderBrowserDialog.SelectedPath;
+                    txtSourcePath.Text = System.IO.Path.GetDirectoryName(folderBrowser.FileName);
 
                     // Validate the selected folder
                     if (IsValidSourcePath(txtSourcePath.Text))
@@ -97,15 +99,17 @@ namespace TrainingManagerBuilder
 
         private void btnBrowseOutput_Click(object sender, EventArgs e)
         {
-            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+            using (var folderBrowser = new OpenFileDialog())
             {
-                folderBrowserDialog.Description = "Select the folder where the output will be saved";
-                folderBrowserDialog.ShowNewFolderButton = true;
+                folderBrowser.ValidateNames = false;
+                folderBrowser.CheckFileExists = false;
+                folderBrowser.CheckPathExists = true;
+                folderBrowser.FileName = "Select Folder";
 
-                DialogResult result = folderBrowserDialog.ShowDialog();
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+                if (folderBrowser.ShowDialog() == DialogResult.OK)
                 {
-                    txtOutputPath.Text = folderBrowserDialog.SelectedPath;
+                    string folderPath = System.IO.Path.GetDirectoryName(folderBrowser.FileName);
+                    txtOutputPath.Text = folderPath;
                 }
             }
         }

@@ -31,425 +31,426 @@ namespace TrainingManagerBuilder
         /// </summary>
         private void InitializeComponent()
         {
-            lblSourcePath = new Label();
-            folderBrowserDialog1 = new FolderBrowserDialog();
-            txtSourcePath = new TextBox();
-            btnBrowseSource = new Button();
-            txtCurrentMajor = new TextBox();
-            txtCurrentMinor = new TextBox();
-            txtCurrentBuild = new TextBox();
-            txtCurrentRevision = new TextBox();
-            label1 = new Label();
-            label2 = new Label();
-            txtNextRevision = new TextBox();
-            txtNextBuild = new TextBox();
-            txtNextMinor = new TextBox();
-            txtNextMajor = new TextBox();
-            btnBuildAndPackage = new Button();
-            txtOutputPath = new TextBox();
-            txtOutputDestination = new Label();
-            btnBrowseOutput = new Button();
-            progressBarUpdateFileVersions = new ProgressBar();
-            lblUpdateFileVersions = new Label();
-            lblBuildTM = new Label();
-            progressBarTM = new ProgressBar();
-            lblBuildWeb = new Label();
-            progressBarWeb = new ProgressBar();
-            lblCopyZips = new Label();
-            progressBarCopyZip = new ProgressBar();
-            lblBuildInstaller = new Label();
-            progressBarInstaller = new ProgressBar();
-            lblElapsedTimeFileVersion = new Label();
-            lblElapsedTimeTM = new Label();
-            lblElapsedTimeWeb = new Label();
-            lblElapsedTimeCopyZips = new Label();
-            lblElapsedTimeInstaller = new Label();
-            chkOpenGitAfterBuild = new CheckBox();
-            chkOpenOutputFolderAfterBuild = new CheckBox();
-            lblStatusFileVersion = new Label();
-            lblStatusTM = new Label();
-            lblStatusWeb = new Label();
-            lblStatusCopyZips = new Label();
-            lblStatusInstaller = new Label();
-            SuspendLayout();
+            this.lblSourcePath = new System.Windows.Forms.Label();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.txtSourcePath = new System.Windows.Forms.TextBox();
+            this.btnBrowseSource = new System.Windows.Forms.Button();
+            this.txtCurrentMajor = new System.Windows.Forms.TextBox();
+            this.txtCurrentMinor = new System.Windows.Forms.TextBox();
+            this.txtCurrentBuild = new System.Windows.Forms.TextBox();
+            this.txtCurrentRevision = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtNextRevision = new System.Windows.Forms.TextBox();
+            this.txtNextBuild = new System.Windows.Forms.TextBox();
+            this.txtNextMinor = new System.Windows.Forms.TextBox();
+            this.txtNextMajor = new System.Windows.Forms.TextBox();
+            this.btnBuildAndPackage = new System.Windows.Forms.Button();
+            this.txtOutputPath = new System.Windows.Forms.TextBox();
+            this.txtOutputDestination = new System.Windows.Forms.Label();
+            this.btnBrowseOutput = new System.Windows.Forms.Button();
+            this.progressBarUpdateFileVersions = new System.Windows.Forms.ProgressBar();
+            this.lblUpdateFileVersions = new System.Windows.Forms.Label();
+            this.lblBuildTM = new System.Windows.Forms.Label();
+            this.progressBarTM = new System.Windows.Forms.ProgressBar();
+            this.lblBuildWeb = new System.Windows.Forms.Label();
+            this.progressBarWeb = new System.Windows.Forms.ProgressBar();
+            this.lblCopyZips = new System.Windows.Forms.Label();
+            this.progressBarCopyZip = new System.Windows.Forms.ProgressBar();
+            this.lblBuildInstaller = new System.Windows.Forms.Label();
+            this.progressBarInstaller = new System.Windows.Forms.ProgressBar();
+            this.lblElapsedTimeFileVersion = new System.Windows.Forms.Label();
+            this.lblElapsedTimeTM = new System.Windows.Forms.Label();
+            this.lblElapsedTimeWeb = new System.Windows.Forms.Label();
+            this.lblElapsedTimeCopyZips = new System.Windows.Forms.Label();
+            this.lblElapsedTimeInstaller = new System.Windows.Forms.Label();
+            this.chkOpenGitAfterBuild = new System.Windows.Forms.CheckBox();
+            this.chkOpenOutputFolderAfterBuild = new System.Windows.Forms.CheckBox();
+            this.lblStatusFileVersion = new System.Windows.Forms.Label();
+            this.lblStatusTM = new System.Windows.Forms.Label();
+            this.lblStatusWeb = new System.Windows.Forms.Label();
+            this.lblStatusCopyZips = new System.Windows.Forms.Label();
+            this.lblStatusInstaller = new System.Windows.Forms.Label();
+            this.SuspendLayout();
             // 
             // lblSourcePath
             // 
-            lblSourcePath.AutoSize = true;
-            lblSourcePath.Location = new Point(12, 34);
-            lblSourcePath.Name = "lblSourcePath";
-            lblSourcePath.Size = new Size(167, 15);
-            lblSourcePath.TabIndex = 0;
-            lblSourcePath.Text = "Path to project /source/ folder";
+            this.lblSourcePath.AutoSize = true;
+            this.lblSourcePath.Location = new System.Drawing.Point(10, 29);
+            this.lblSourcePath.Name = "lblSourcePath";
+            this.lblSourcePath.Size = new System.Drawing.Size(150, 13);
+            this.lblSourcePath.TabIndex = 0;
+            this.lblSourcePath.Text = "Path to project /source/ folder";
             // 
             // txtSourcePath
             // 
-            txtSourcePath.Location = new Point(185, 31);
-            txtSourcePath.Name = "txtSourcePath";
-            txtSourcePath.Size = new Size(377, 23);
-            txtSourcePath.TabIndex = 1;
+            this.txtSourcePath.Location = new System.Drawing.Point(159, 27);
+            this.txtSourcePath.Name = "txtSourcePath";
+            this.txtSourcePath.Size = new System.Drawing.Size(324, 20);
+            this.txtSourcePath.TabIndex = 1;
             // 
             // btnBrowseSource
             // 
-            btnBrowseSource.Location = new Point(568, 31);
-            btnBrowseSource.Name = "btnBrowseSource";
-            btnBrowseSource.Size = new Size(75, 23);
-            btnBrowseSource.TabIndex = 2;
-            btnBrowseSource.Text = "Browse...";
-            btnBrowseSource.TextImageRelation = TextImageRelation.TextAboveImage;
-            btnBrowseSource.UseVisualStyleBackColor = true;
-            btnBrowseSource.Click += btnBrowseSource_Click;
+            this.btnBrowseSource.Location = new System.Drawing.Point(487, 27);
+            this.btnBrowseSource.Name = "btnBrowseSource";
+            this.btnBrowseSource.Size = new System.Drawing.Size(64, 20);
+            this.btnBrowseSource.TabIndex = 2;
+            this.btnBrowseSource.Text = "Browse...";
+            this.btnBrowseSource.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
+            this.btnBrowseSource.UseVisualStyleBackColor = true;
+            this.btnBrowseSource.Click += new System.EventHandler(this.btnBrowseSource_Click);
             // 
             // txtCurrentMajor
             // 
-            txtCurrentMajor.Location = new Point(107, 105);
-            txtCurrentMajor.Name = "txtCurrentMajor";
-            txtCurrentMajor.Size = new Size(45, 23);
-            txtCurrentMajor.TabIndex = 3;
+            this.txtCurrentMajor.Location = new System.Drawing.Point(92, 91);
+            this.txtCurrentMajor.Name = "txtCurrentMajor";
+            this.txtCurrentMajor.Size = new System.Drawing.Size(39, 20);
+            this.txtCurrentMajor.TabIndex = 3;
             // 
             // txtCurrentMinor
             // 
-            txtCurrentMinor.Location = new Point(158, 105);
-            txtCurrentMinor.Name = "txtCurrentMinor";
-            txtCurrentMinor.Size = new Size(45, 23);
-            txtCurrentMinor.TabIndex = 4;
+            this.txtCurrentMinor.Location = new System.Drawing.Point(135, 91);
+            this.txtCurrentMinor.Name = "txtCurrentMinor";
+            this.txtCurrentMinor.Size = new System.Drawing.Size(39, 20);
+            this.txtCurrentMinor.TabIndex = 4;
             // 
             // txtCurrentBuild
             // 
-            txtCurrentBuild.Location = new Point(209, 105);
-            txtCurrentBuild.Name = "txtCurrentBuild";
-            txtCurrentBuild.Size = new Size(45, 23);
-            txtCurrentBuild.TabIndex = 5;
+            this.txtCurrentBuild.Location = new System.Drawing.Point(179, 91);
+            this.txtCurrentBuild.Name = "txtCurrentBuild";
+            this.txtCurrentBuild.Size = new System.Drawing.Size(39, 20);
+            this.txtCurrentBuild.TabIndex = 5;
             // 
             // txtCurrentRevision
             // 
-            txtCurrentRevision.Location = new Point(260, 105);
-            txtCurrentRevision.Name = "txtCurrentRevision";
-            txtCurrentRevision.Size = new Size(45, 23);
-            txtCurrentRevision.TabIndex = 6;
+            this.txtCurrentRevision.Location = new System.Drawing.Point(223, 91);
+            this.txtCurrentRevision.Name = "txtCurrentRevision";
+            this.txtCurrentRevision.Size = new System.Drawing.Size(39, 20);
+            this.txtCurrentRevision.TabIndex = 6;
             // 
             // label1
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(12, 108);
-            label1.Name = "label1";
-            label1.Size = new Size(88, 15);
-            label1.TabIndex = 7;
-            label1.Text = "Current version";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 94);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(78, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Current version";
             // 
             // label2
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(12, 146);
-            label2.Name = "label2";
-            label2.Size = new Size(73, 15);
-            label2.TabIndex = 12;
-            label2.Text = "Next version";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(10, 127);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(66, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Next version";
             // 
             // txtNextRevision
             // 
-            txtNextRevision.Location = new Point(260, 143);
-            txtNextRevision.Name = "txtNextRevision";
-            txtNextRevision.Size = new Size(45, 23);
-            txtNextRevision.TabIndex = 11;
+            this.txtNextRevision.Location = new System.Drawing.Point(223, 124);
+            this.txtNextRevision.Name = "txtNextRevision";
+            this.txtNextRevision.Size = new System.Drawing.Size(39, 20);
+            this.txtNextRevision.TabIndex = 11;
             // 
             // txtNextBuild
             // 
-            txtNextBuild.Location = new Point(209, 143);
-            txtNextBuild.Name = "txtNextBuild";
-            txtNextBuild.Size = new Size(45, 23);
-            txtNextBuild.TabIndex = 10;
+            this.txtNextBuild.Location = new System.Drawing.Point(179, 124);
+            this.txtNextBuild.Name = "txtNextBuild";
+            this.txtNextBuild.Size = new System.Drawing.Size(39, 20);
+            this.txtNextBuild.TabIndex = 10;
             // 
             // txtNextMinor
             // 
-            txtNextMinor.Location = new Point(158, 143);
-            txtNextMinor.Name = "txtNextMinor";
-            txtNextMinor.Size = new Size(45, 23);
-            txtNextMinor.TabIndex = 9;
+            this.txtNextMinor.Location = new System.Drawing.Point(135, 124);
+            this.txtNextMinor.Name = "txtNextMinor";
+            this.txtNextMinor.Size = new System.Drawing.Size(39, 20);
+            this.txtNextMinor.TabIndex = 9;
             // 
             // txtNextMajor
             // 
-            txtNextMajor.Location = new Point(107, 143);
-            txtNextMajor.Name = "txtNextMajor";
-            txtNextMajor.Size = new Size(45, 23);
-            txtNextMajor.TabIndex = 8;
+            this.txtNextMajor.Location = new System.Drawing.Point(92, 124);
+            this.txtNextMajor.Name = "txtNextMajor";
+            this.txtNextMajor.Size = new System.Drawing.Size(39, 20);
+            this.txtNextMajor.TabIndex = 8;
             // 
             // btnBuildAndPackage
             // 
-            btnBuildAndPackage.Location = new Point(12, 301);
-            btnBuildAndPackage.Name = "btnBuildAndPackage";
-            btnBuildAndPackage.Size = new Size(173, 57);
-            btnBuildAndPackage.TabIndex = 14;
-            btnBuildAndPackage.Text = "Build And Zip";
-            btnBuildAndPackage.UseVisualStyleBackColor = true;
-            btnBuildAndPackage.Click += btnBuildAndPackage_Click;
+            this.btnBuildAndPackage.Location = new System.Drawing.Point(10, 261);
+            this.btnBuildAndPackage.Name = "btnBuildAndPackage";
+            this.btnBuildAndPackage.Size = new System.Drawing.Size(148, 49);
+            this.btnBuildAndPackage.TabIndex = 14;
+            this.btnBuildAndPackage.Text = "Build And Zip";
+            this.btnBuildAndPackage.UseVisualStyleBackColor = true;
+            this.btnBuildAndPackage.Click += new System.EventHandler(this.btnBuildAndPackage_Click);
             // 
             // txtOutputPath
             // 
-            txtOutputPath.Location = new Point(185, 60);
-            txtOutputPath.Name = "txtOutputPath";
-            txtOutputPath.Size = new Size(377, 23);
-            txtOutputPath.TabIndex = 15;
+            this.txtOutputPath.Location = new System.Drawing.Point(159, 52);
+            this.txtOutputPath.Name = "txtOutputPath";
+            this.txtOutputPath.Size = new System.Drawing.Size(324, 20);
+            this.txtOutputPath.TabIndex = 15;
             // 
             // txtOutputDestination
             // 
-            txtOutputDestination.AutoSize = true;
-            txtOutputDestination.Location = new Point(12, 63);
-            txtOutputDestination.Name = "txtOutputDestination";
-            txtOutputDestination.Size = new Size(142, 15);
-            txtOutputDestination.TabIndex = 16;
-            txtOutputDestination.Text = "Destination path for build";
+            this.txtOutputDestination.AutoSize = true;
+            this.txtOutputDestination.Location = new System.Drawing.Point(10, 55);
+            this.txtOutputDestination.Name = "txtOutputDestination";
+            this.txtOutputDestination.Size = new System.Drawing.Size(124, 13);
+            this.txtOutputDestination.TabIndex = 16;
+            this.txtOutputDestination.Text = "Destination path for build";
             // 
             // btnBrowseOutput
             // 
-            btnBrowseOutput.Location = new Point(568, 60);
-            btnBrowseOutput.Name = "btnBrowseOutput";
-            btnBrowseOutput.Size = new Size(75, 23);
-            btnBrowseOutput.TabIndex = 17;
-            btnBrowseOutput.Text = "Browse...";
-            btnBrowseOutput.UseVisualStyleBackColor = true;
-            btnBrowseOutput.Click += btnBrowseOutput_Click;
+            this.btnBrowseOutput.Location = new System.Drawing.Point(487, 52);
+            this.btnBrowseOutput.Name = "btnBrowseOutput";
+            this.btnBrowseOutput.Size = new System.Drawing.Size(64, 20);
+            this.btnBrowseOutput.TabIndex = 17;
+            this.btnBrowseOutput.Text = "Browse...";
+            this.btnBrowseOutput.UseVisualStyleBackColor = true;
+            this.btnBrowseOutput.Click += new System.EventHandler(this.btnBrowseOutput_Click);
             // 
             // progressBarUpdateFileVersions
             // 
-            progressBarUpdateFileVersions.Anchor = AnchorStyles.Left;
-            progressBarUpdateFileVersions.Location = new Point(398, 223);
-            progressBarUpdateFileVersions.Name = "progressBarUpdateFileVersions";
-            progressBarUpdateFileVersions.Size = new Size(127, 23);
-            progressBarUpdateFileVersions.TabIndex = 18;
+            this.progressBarUpdateFileVersions.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.progressBarUpdateFileVersions.Location = new System.Drawing.Point(347, 193);
+            this.progressBarUpdateFileVersions.Name = "progressBarUpdateFileVersions";
+            this.progressBarUpdateFileVersions.Size = new System.Drawing.Size(109, 20);
+            this.progressBarUpdateFileVersions.TabIndex = 18;
             // 
             // lblUpdateFileVersions
             // 
-            lblUpdateFileVersions.Anchor = AnchorStyles.Left;
-            lblUpdateFileVersions.AutoSize = true;
-            lblUpdateFileVersions.Location = new Point(280, 231);
-            lblUpdateFileVersions.Name = "lblUpdateFileVersions";
-            lblUpdateFileVersions.Size = new Size(112, 15);
-            lblUpdateFileVersions.TabIndex = 19;
-            lblUpdateFileVersions.Text = "Update File Versions";
+            this.lblUpdateFileVersions.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblUpdateFileVersions.AutoSize = true;
+            this.lblUpdateFileVersions.Location = new System.Drawing.Point(240, 200);
+            this.lblUpdateFileVersions.Name = "lblUpdateFileVersions";
+            this.lblUpdateFileVersions.Size = new System.Drawing.Size(104, 13);
+            this.lblUpdateFileVersions.TabIndex = 19;
+            this.lblUpdateFileVersions.Text = "Update File Versions";
             // 
             // lblBuildTM
             // 
-            lblBuildTM.AutoSize = true;
-            lblBuildTM.Location = new Point(296, 260);
-            lblBuildTM.Name = "lblBuildTM";
-            lblBuildTM.Size = new Size(95, 15);
-            lblBuildTM.TabIndex = 21;
-            lblBuildTM.Text = "Build and zip TM";
+            this.lblBuildTM.AutoSize = true;
+            this.lblBuildTM.Location = new System.Drawing.Point(254, 225);
+            this.lblBuildTM.Name = "lblBuildTM";
+            this.lblBuildTM.Size = new System.Drawing.Size(86, 13);
+            this.lblBuildTM.TabIndex = 21;
+            this.lblBuildTM.Text = "Build and zip TM";
             // 
             // progressBarTM
             // 
-            progressBarTM.Location = new Point(398, 252);
-            progressBarTM.Name = "progressBarTM";
-            progressBarTM.Size = new Size(127, 23);
-            progressBarTM.TabIndex = 20;
+            this.progressBarTM.Location = new System.Drawing.Point(347, 218);
+            this.progressBarTM.Name = "progressBarTM";
+            this.progressBarTM.Size = new System.Drawing.Size(109, 20);
+            this.progressBarTM.TabIndex = 20;
             // 
             // lblBuildWeb
             // 
-            lblBuildWeb.AutoSize = true;
-            lblBuildWeb.Location = new Point(290, 289);
-            lblBuildWeb.Name = "lblBuildWeb";
-            lblBuildWeb.Size = new Size(102, 15);
-            lblBuildWeb.TabIndex = 23;
-            lblBuildWeb.Text = "Build and zip Web";
+            this.lblBuildWeb.AutoSize = true;
+            this.lblBuildWeb.Location = new System.Drawing.Point(249, 250);
+            this.lblBuildWeb.Name = "lblBuildWeb";
+            this.lblBuildWeb.Size = new System.Drawing.Size(93, 13);
+            this.lblBuildWeb.TabIndex = 23;
+            this.lblBuildWeb.Text = "Build and zip Web";
             // 
             // progressBarWeb
             // 
-            progressBarWeb.Location = new Point(398, 281);
-            progressBarWeb.Name = "progressBarWeb";
-            progressBarWeb.Size = new Size(127, 23);
-            progressBarWeb.TabIndex = 22;
+            this.progressBarWeb.Location = new System.Drawing.Point(347, 244);
+            this.progressBarWeb.Name = "progressBarWeb";
+            this.progressBarWeb.Size = new System.Drawing.Size(109, 20);
+            this.progressBarWeb.TabIndex = 22;
             // 
             // lblCopyZips
             // 
-            lblCopyZips.AutoSize = true;
-            lblCopyZips.Location = new Point(237, 318);
-            lblCopyZips.Name = "lblCopyZips";
-            lblCopyZips.Size = new Size(155, 15);
-            lblCopyZips.TabIndex = 25;
-            lblCopyZips.Text = "Add TM and web to Installer";
+            this.lblCopyZips.AutoSize = true;
+            this.lblCopyZips.Location = new System.Drawing.Point(203, 276);
+            this.lblCopyZips.Name = "lblCopyZips";
+            this.lblCopyZips.Size = new System.Drawing.Size(140, 13);
+            this.lblCopyZips.TabIndex = 25;
+            this.lblCopyZips.Text = "Add TM and web to Installer";
             // 
             // progressBarCopyZip
             // 
-            progressBarCopyZip.Location = new Point(398, 310);
-            progressBarCopyZip.Name = "progressBarCopyZip";
-            progressBarCopyZip.Size = new Size(127, 23);
-            progressBarCopyZip.TabIndex = 24;
+            this.progressBarCopyZip.Location = new System.Drawing.Point(347, 269);
+            this.progressBarCopyZip.Name = "progressBarCopyZip";
+            this.progressBarCopyZip.Size = new System.Drawing.Size(109, 20);
+            this.progressBarCopyZip.TabIndex = 24;
             // 
             // lblBuildInstaller
             // 
-            lblBuildInstaller.AutoSize = true;
-            lblBuildInstaller.Location = new Point(271, 347);
-            lblBuildInstaller.Name = "lblBuildInstaller";
-            lblBuildInstaller.Size = new Size(122, 15);
-            lblBuildInstaller.TabIndex = 27;
-            lblBuildInstaller.Text = "Build and zip Installer ";
+            this.lblBuildInstaller.AutoSize = true;
+            this.lblBuildInstaller.Location = new System.Drawing.Point(232, 301);
+            this.lblBuildInstaller.Name = "lblBuildInstaller";
+            this.lblBuildInstaller.Size = new System.Drawing.Size(109, 13);
+            this.lblBuildInstaller.TabIndex = 27;
+            this.lblBuildInstaller.Text = "Build and zip Installer ";
             // 
             // progressBarInstaller
             // 
-            progressBarInstaller.Location = new Point(398, 339);
-            progressBarInstaller.Name = "progressBarInstaller";
-            progressBarInstaller.Size = new Size(127, 23);
-            progressBarInstaller.TabIndex = 26;
+            this.progressBarInstaller.Location = new System.Drawing.Point(347, 294);
+            this.progressBarInstaller.Name = "progressBarInstaller";
+            this.progressBarInstaller.Size = new System.Drawing.Size(109, 20);
+            this.progressBarInstaller.TabIndex = 26;
             // 
             // lblElapsedTimeFileVersion
             // 
-            lblElapsedTimeFileVersion.Anchor = AnchorStyles.Left;
-            lblElapsedTimeFileVersion.AutoSize = true;
-            lblElapsedTimeFileVersion.Location = new Point(531, 231);
-            lblElapsedTimeFileVersion.Name = "lblElapsedTimeFileVersion";
-            lblElapsedTimeFileVersion.Size = new Size(48, 15);
-            lblElapsedTimeFileVersion.TabIndex = 29;
-            lblElapsedTimeFileVersion.Text = "Waiting";
+            this.lblElapsedTimeFileVersion.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblElapsedTimeFileVersion.AutoSize = true;
+            this.lblElapsedTimeFileVersion.Location = new System.Drawing.Point(461, 200);
+            this.lblElapsedTimeFileVersion.Name = "lblElapsedTimeFileVersion";
+            this.lblElapsedTimeFileVersion.Size = new System.Drawing.Size(43, 13);
+            this.lblElapsedTimeFileVersion.TabIndex = 29;
+            this.lblElapsedTimeFileVersion.Text = "Waiting";
             // 
             // lblElapsedTimeTM
             // 
-            lblElapsedTimeTM.AutoSize = true;
-            lblElapsedTimeTM.Location = new Point(531, 260);
-            lblElapsedTimeTM.Name = "lblElapsedTimeTM";
-            lblElapsedTimeTM.Size = new Size(48, 15);
-            lblElapsedTimeTM.TabIndex = 30;
-            lblElapsedTimeTM.Text = "Waiting";
+            this.lblElapsedTimeTM.AutoSize = true;
+            this.lblElapsedTimeTM.Location = new System.Drawing.Point(461, 225);
+            this.lblElapsedTimeTM.Name = "lblElapsedTimeTM";
+            this.lblElapsedTimeTM.Size = new System.Drawing.Size(43, 13);
+            this.lblElapsedTimeTM.TabIndex = 30;
+            this.lblElapsedTimeTM.Text = "Waiting";
             // 
             // lblElapsedTimeWeb
             // 
-            lblElapsedTimeWeb.AutoSize = true;
-            lblElapsedTimeWeb.Location = new Point(531, 289);
-            lblElapsedTimeWeb.Name = "lblElapsedTimeWeb";
-            lblElapsedTimeWeb.Size = new Size(48, 15);
-            lblElapsedTimeWeb.TabIndex = 31;
-            lblElapsedTimeWeb.Text = "Waiting";
+            this.lblElapsedTimeWeb.AutoSize = true;
+            this.lblElapsedTimeWeb.Location = new System.Drawing.Point(461, 250);
+            this.lblElapsedTimeWeb.Name = "lblElapsedTimeWeb";
+            this.lblElapsedTimeWeb.Size = new System.Drawing.Size(43, 13);
+            this.lblElapsedTimeWeb.TabIndex = 31;
+            this.lblElapsedTimeWeb.Text = "Waiting";
             // 
             // lblElapsedTimeCopyZips
             // 
-            lblElapsedTimeCopyZips.AutoSize = true;
-            lblElapsedTimeCopyZips.Location = new Point(531, 318);
-            lblElapsedTimeCopyZips.Name = "lblElapsedTimeCopyZips";
-            lblElapsedTimeCopyZips.Size = new Size(48, 15);
-            lblElapsedTimeCopyZips.TabIndex = 32;
-            lblElapsedTimeCopyZips.Text = "Waiting";
+            this.lblElapsedTimeCopyZips.AutoSize = true;
+            this.lblElapsedTimeCopyZips.Location = new System.Drawing.Point(461, 276);
+            this.lblElapsedTimeCopyZips.Name = "lblElapsedTimeCopyZips";
+            this.lblElapsedTimeCopyZips.Size = new System.Drawing.Size(43, 13);
+            this.lblElapsedTimeCopyZips.TabIndex = 32;
+            this.lblElapsedTimeCopyZips.Text = "Waiting";
             // 
             // lblElapsedTimeInstaller
             // 
-            lblElapsedTimeInstaller.AutoSize = true;
-            lblElapsedTimeInstaller.Location = new Point(531, 347);
-            lblElapsedTimeInstaller.Name = "lblElapsedTimeInstaller";
-            lblElapsedTimeInstaller.Size = new Size(48, 15);
-            lblElapsedTimeInstaller.TabIndex = 33;
-            lblElapsedTimeInstaller.Text = "Waiting";
+            this.lblElapsedTimeInstaller.AutoSize = true;
+            this.lblElapsedTimeInstaller.Location = new System.Drawing.Point(461, 301);
+            this.lblElapsedTimeInstaller.Name = "lblElapsedTimeInstaller";
+            this.lblElapsedTimeInstaller.Size = new System.Drawing.Size(43, 13);
+            this.lblElapsedTimeInstaller.TabIndex = 33;
+            this.lblElapsedTimeInstaller.Text = "Waiting";
             // 
             // chkOpenGitAfterBuild
             // 
-            chkOpenGitAfterBuild.AutoSize = true;
-            chkOpenGitAfterBuild.Checked = true;
-            chkOpenGitAfterBuild.CheckState = CheckState.Checked;
-            chkOpenGitAfterBuild.Location = new Point(12, 175);
-            chkOpenGitAfterBuild.Name = "chkOpenGitAfterBuild";
-            chkOpenGitAfterBuild.Size = new Size(171, 19);
-            chkOpenGitAfterBuild.TabIndex = 34;
-            chkOpenGitAfterBuild.Text = "Open TortoiseGit after build";
-            chkOpenGitAfterBuild.UseVisualStyleBackColor = true;
-            chkOpenGitAfterBuild.CheckedChanged += chkOpenGitAfterBuild_CheckedChanged;
+            this.chkOpenGitAfterBuild.AutoSize = true;
+            this.chkOpenGitAfterBuild.Checked = true;
+            this.chkOpenGitAfterBuild.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkOpenGitAfterBuild.Location = new System.Drawing.Point(10, 152);
+            this.chkOpenGitAfterBuild.Name = "chkOpenGitAfterBuild";
+            this.chkOpenGitAfterBuild.Size = new System.Drawing.Size(155, 17);
+            this.chkOpenGitAfterBuild.TabIndex = 34;
+            this.chkOpenGitAfterBuild.Text = "Open TortoiseGit after build";
+            this.chkOpenGitAfterBuild.UseVisualStyleBackColor = true;
+            this.chkOpenGitAfterBuild.CheckedChanged += new System.EventHandler(this.chkOpenGitAfterBuild_CheckedChanged);
             // 
             // chkOpenOutputFolderAfterBuild
             // 
-            chkOpenOutputFolderAfterBuild.AutoSize = true;
-            chkOpenOutputFolderAfterBuild.Location = new Point(12, 200);
-            chkOpenOutputFolderAfterBuild.Name = "chkOpenOutputFolderAfterBuild";
-            chkOpenOutputFolderAfterBuild.Size = new Size(201, 19);
-            chkOpenOutputFolderAfterBuild.TabIndex = 35;
-            chkOpenOutputFolderAfterBuild.Text = "Open output directory after build";
-            chkOpenOutputFolderAfterBuild.UseVisualStyleBackColor = true;
-            chkOpenOutputFolderAfterBuild.CheckedChanged += chkOpenOutputFolderAfterBuild_CheckedChanged;
+            this.chkOpenOutputFolderAfterBuild.AutoSize = true;
+            this.chkOpenOutputFolderAfterBuild.Location = new System.Drawing.Point(10, 173);
+            this.chkOpenOutputFolderAfterBuild.Name = "chkOpenOutputFolderAfterBuild";
+            this.chkOpenOutputFolderAfterBuild.Size = new System.Drawing.Size(177, 17);
+            this.chkOpenOutputFolderAfterBuild.TabIndex = 35;
+            this.chkOpenOutputFolderAfterBuild.Text = "Open output directory after build";
+            this.chkOpenOutputFolderAfterBuild.UseVisualStyleBackColor = true;
+            this.chkOpenOutputFolderAfterBuild.CheckedChanged += new System.EventHandler(this.chkOpenOutputFolderAfterBuild_CheckedChanged);
             // 
             // lblStatusFileVersion
             // 
-            lblStatusFileVersion.AutoSize = true;
-            lblStatusFileVersion.Location = new Point(585, 233);
-            lblStatusFileVersion.Name = "lblStatusFileVersion";
-            lblStatusFileVersion.Size = new Size(0, 15);
-            lblStatusFileVersion.TabIndex = 36;
+            this.lblStatusFileVersion.AutoSize = true;
+            this.lblStatusFileVersion.Location = new System.Drawing.Point(510, 200);
+            this.lblStatusFileVersion.Name = "lblStatusFileVersion";
+            this.lblStatusFileVersion.Size = new System.Drawing.Size(0, 13);
+            this.lblStatusFileVersion.TabIndex = 36;
             // 
             // lblStatusTM
             // 
-            lblStatusTM.AutoSize = true;
-            lblStatusTM.Location = new Point(585, 260);
-            lblStatusTM.Name = "lblStatusTM";
-            lblStatusTM.Size = new Size(0, 15);
-            lblStatusTM.TabIndex = 37;
+            this.lblStatusTM.AutoSize = true;
+            this.lblStatusTM.Location = new System.Drawing.Point(507, 225);
+            this.lblStatusTM.Name = "lblStatusTM";
+            this.lblStatusTM.Size = new System.Drawing.Size(0, 13);
+            this.lblStatusTM.TabIndex = 37;
             // 
             // lblStatusWeb
             // 
-            lblStatusWeb.AutoSize = true;
-            lblStatusWeb.Location = new Point(585, 289);
-            lblStatusWeb.Name = "lblStatusWeb";
-            lblStatusWeb.Size = new Size(0, 15);
-            lblStatusWeb.TabIndex = 38;
+            this.lblStatusWeb.AutoSize = true;
+            this.lblStatusWeb.Location = new System.Drawing.Point(507, 250);
+            this.lblStatusWeb.Name = "lblStatusWeb";
+            this.lblStatusWeb.Size = new System.Drawing.Size(0, 13);
+            this.lblStatusWeb.TabIndex = 38;
             // 
             // lblStatusCopyZips
             // 
-            lblStatusCopyZips.AutoSize = true;
-            lblStatusCopyZips.Location = new Point(586, 318);
-            lblStatusCopyZips.Name = "lblStatusCopyZips";
-            lblStatusCopyZips.Size = new Size(0, 15);
-            lblStatusCopyZips.TabIndex = 39;
+            this.lblStatusCopyZips.AutoSize = true;
+            this.lblStatusCopyZips.Location = new System.Drawing.Point(508, 276);
+            this.lblStatusCopyZips.Name = "lblStatusCopyZips";
+            this.lblStatusCopyZips.Size = new System.Drawing.Size(0, 13);
+            this.lblStatusCopyZips.TabIndex = 39;
             // 
             // lblStatusInstaller
             // 
-            lblStatusInstaller.AutoSize = true;
-            lblStatusInstaller.Location = new Point(585, 347);
-            lblStatusInstaller.Name = "lblStatusInstaller";
-            lblStatusInstaller.Size = new Size(0, 15);
-            lblStatusInstaller.TabIndex = 40;
+            this.lblStatusInstaller.AutoSize = true;
+            this.lblStatusInstaller.Location = new System.Drawing.Point(507, 301);
+            this.lblStatusInstaller.Name = "lblStatusInstaller";
+            this.lblStatusInstaller.Size = new System.Drawing.Size(0, 13);
+            this.lblStatusInstaller.TabIndex = 40;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(726, 382);
-            Controls.Add(lblStatusInstaller);
-            Controls.Add(lblStatusCopyZips);
-            Controls.Add(lblStatusWeb);
-            Controls.Add(lblStatusTM);
-            Controls.Add(lblStatusFileVersion);
-            Controls.Add(chkOpenOutputFolderAfterBuild);
-            Controls.Add(chkOpenGitAfterBuild);
-            Controls.Add(lblElapsedTimeInstaller);
-            Controls.Add(lblElapsedTimeCopyZips);
-            Controls.Add(lblElapsedTimeWeb);
-            Controls.Add(lblElapsedTimeTM);
-            Controls.Add(lblElapsedTimeFileVersion);
-            Controls.Add(lblBuildInstaller);
-            Controls.Add(progressBarInstaller);
-            Controls.Add(lblCopyZips);
-            Controls.Add(progressBarCopyZip);
-            Controls.Add(lblBuildWeb);
-            Controls.Add(progressBarWeb);
-            Controls.Add(lblBuildTM);
-            Controls.Add(progressBarTM);
-            Controls.Add(lblUpdateFileVersions);
-            Controls.Add(progressBarUpdateFileVersions);
-            Controls.Add(btnBrowseOutput);
-            Controls.Add(txtOutputDestination);
-            Controls.Add(txtOutputPath);
-            Controls.Add(btnBuildAndPackage);
-            Controls.Add(label2);
-            Controls.Add(txtNextRevision);
-            Controls.Add(txtNextBuild);
-            Controls.Add(txtNextMinor);
-            Controls.Add(txtNextMajor);
-            Controls.Add(label1);
-            Controls.Add(txtCurrentRevision);
-            Controls.Add(txtCurrentBuild);
-            Controls.Add(txtCurrentMinor);
-            Controls.Add(txtCurrentMajor);
-            Controls.Add(btnBrowseSource);
-            Controls.Add(txtSourcePath);
-            Controls.Add(lblSourcePath);
-            Name = "MainForm";
-            Text = "Form1";
-            ResumeLayout(false);
-            PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(622, 331);
+            this.Controls.Add(this.lblStatusInstaller);
+            this.Controls.Add(this.lblStatusCopyZips);
+            this.Controls.Add(this.lblStatusWeb);
+            this.Controls.Add(this.lblStatusTM);
+            this.Controls.Add(this.lblStatusFileVersion);
+            this.Controls.Add(this.chkOpenOutputFolderAfterBuild);
+            this.Controls.Add(this.chkOpenGitAfterBuild);
+            this.Controls.Add(this.lblElapsedTimeInstaller);
+            this.Controls.Add(this.lblElapsedTimeCopyZips);
+            this.Controls.Add(this.lblElapsedTimeWeb);
+            this.Controls.Add(this.lblElapsedTimeTM);
+            this.Controls.Add(this.lblElapsedTimeFileVersion);
+            this.Controls.Add(this.lblBuildInstaller);
+            this.Controls.Add(this.progressBarInstaller);
+            this.Controls.Add(this.lblCopyZips);
+            this.Controls.Add(this.progressBarCopyZip);
+            this.Controls.Add(this.lblBuildWeb);
+            this.Controls.Add(this.progressBarWeb);
+            this.Controls.Add(this.lblBuildTM);
+            this.Controls.Add(this.progressBarTM);
+            this.Controls.Add(this.lblUpdateFileVersions);
+            this.Controls.Add(this.progressBarUpdateFileVersions);
+            this.Controls.Add(this.btnBrowseOutput);
+            this.Controls.Add(this.txtOutputDestination);
+            this.Controls.Add(this.txtOutputPath);
+            this.Controls.Add(this.btnBuildAndPackage);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.txtNextRevision);
+            this.Controls.Add(this.txtNextBuild);
+            this.Controls.Add(this.txtNextMinor);
+            this.Controls.Add(this.txtNextMajor);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtCurrentRevision);
+            this.Controls.Add(this.txtCurrentBuild);
+            this.Controls.Add(this.txtCurrentMinor);
+            this.Controls.Add(this.txtCurrentMajor);
+            this.Controls.Add(this.btnBrowseSource);
+            this.Controls.Add(this.txtSourcePath);
+            this.Controls.Add(this.lblSourcePath);
+            this.Name = "MainForm";
+            this.Text = "Form1";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion

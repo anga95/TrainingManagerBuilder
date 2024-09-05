@@ -63,7 +63,6 @@ public class UserSettings
         {
             if (!string.IsNullOrEmpty(msbuildPath) && File.Exists(msbuildPath))
             {
-                Logger.Log($"Using saved MSBuild path: {msbuildPath}");
                 return msbuildPath;
             }
 

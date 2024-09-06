@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Timers;
 using System.Windows.Forms;
+using Timer = System.Timers.Timer;
 
 namespace TrainingManagerBuilder
 {
@@ -16,20 +18,24 @@ namespace TrainingManagerBuilder
         private Dictionary<string, ProgressStepManager> progressSteps;
         private bool isLoadingSettings = false;
 
+        private System.Timers.Timer buildTimer;
+        private Stopwatch stopwatch;
+
         public MainForm()
         {
             InitializeComponent();
+            RemovePlaceholderLabels();
             settings = UserSettings.Instance;
 
             this.Icon = new Icon(AppDomain.CurrentDomain.BaseDirectory + "svincoolvalmetlogga.ico");
             this.Text = "Training Manager Builder";
-            btnBuildAndPackage.Enabled = false;
+            btnRebuildAndPackage.Enabled = false;
 
-            isLoadingSettings = true;
             chkOpenGitAfterBuild.Enabled = settings.IsTortoiseGitAvailable;
             chkOpenGitAfterBuild.Checked = settings.OpenTortoiseGitAfterBuild;
             chkOpenOutputFolderAfterBuild.Checked = settings.OpenOutputDirectoryAfterBuild;
 
+            isLoadingSettings = true;
             chkRememberSource.Checked = settings.RememberSourcePath;
             chkRememberOutputPath.Checked = settings.RememberOutputPath;
             if (settings.RememberSourcePath)
@@ -54,8 +60,42 @@ namespace TrainingManagerBuilder
                 { "copyZips", new ProgressStepManager(lblCopyZips, progressBarCopyZip, lblElapsedTimeCopyZips, lblStatusCopyZips) },
                 { "BuildInstaller", new ProgressStepManager(lblBuildInstaller, progressBarInstaller, lblElapsedTimeInstaller, lblStatusInstaller) }
             };
-
+            InitTimerAndStopwatch();
             zipUtilities = new ZipUtilities();
+        }
+
+        private void InitTimerAndStopwatch()
+        {
+            stopwatch = new Stopwatch();
+            buildTimer = new Timer(1000);
+            buildTimer.Elapsed += OnTimedEvent;
+        }
+        private int dotCount = 0;
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)
+        {
+            dotCount = (dotCount % 3) + 1;
+            string dots = new string('.', dotCount);
+            if (btnRebuildAndPackage.InvokeRequired)
+            {
+                btnRebuildAndPackage.Invoke(new Action(() =>
+                {
+                    btnRebuildAndPackage.Text = $"Building{dots}\nElapsed: {stopwatch.Elapsed:mm\\:ss}";
+                }));
+            }
+            else
+            {
+                btnRebuildAndPackage.Text = $"Building{dots}\nElapsed: {stopwatch.Elapsed:mm\\:ss}";
+            }
+        }
+
+
+        private void RemovePlaceholderLabels()
+        {
+            lblElapsedTimeFileVersion.Text = "";
+            lblElapsedTimeTM.Text = "";
+            lblElapsedTimeWeb.Text = "";
+            lblElapsedTimeCopyZips.Text = "";
+            lblElapsedTimeInstaller.Text = "";
         }
 
         private void LoadVersion()
@@ -63,7 +103,7 @@ namespace TrainingManagerBuilder
             versionManager = new VersionManager(txtSourcePath.Text);
             LoadCurrentVersion();
 
-            btnBuildAndPackage.Enabled = true;
+            btnRebuildAndPackage.Enabled = true;
 
             if (chkRememberSource.Checked)
             {
@@ -94,7 +134,7 @@ namespace TrainingManagerBuilder
                         MessageBox.Show("The selected folder does not contain a valid solution file (.sln).\nPlease select a correct folder.",
                             "Invalid Folder",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        btnBuildAndPackage.Enabled = false;
+                        btnRebuildAndPackage.Enabled = false;
                     }
                 }
             }
@@ -143,20 +183,7 @@ namespace TrainingManagerBuilder
             txtNextRevision.Text = nextVersion.Revision.ToString();
         }
 
-
-
-
-        public void SetTimersToWaiting()
-        {
-            string waiting = "Waiting...";
-            lblElapsedTimeFileVersion.Text = waiting;
-            lblElapsedTimeTM.Text = waiting;
-            lblElapsedTimeWeb.Text = waiting;
-            lblElapsedTimeCopyZips.Text = waiting;
-            lblElapsedTimeInstaller.Text = waiting;
-        }
-
-        private async void btnBuildAndPackage_Click(object sender, EventArgs e)
+        private async void btnRebuildAndPackage_Click(object sender, EventArgs e)
         {
             LockControls();
 
@@ -165,6 +192,8 @@ namespace TrainingManagerBuilder
 
             try
             {
+                stopwatch.Restart();
+                buildTimer.Start();
                 BuildManager buildManager = new BuildManager(txtSourcePath.Text, zipUtilities, progressSteps);
 
                 // Build and package the project
@@ -174,6 +203,9 @@ namespace TrainingManagerBuilder
                     oldVersion,
                     newVersion
                 );
+
+                stopwatch.Stop();
+                buildTimer.Stop();
 
                 // Open TortoiseGit after build, if selected
                 if (chkOpenGitAfterBuild.Checked)
@@ -203,7 +235,7 @@ namespace TrainingManagerBuilder
         {
             var controls = new List<Control>
             {
-                btnBuildAndPackage, btnBrowseSource, btnBrowseOutput, txtSourcePath, txtOutputPath,
+                btnRebuildAndPackage, btnBrowseSource, btnBrowseOutput, txtSourcePath, txtOutputPath,
                 txtCurrentMajor, txtCurrentMinor, txtCurrentBuild, txtCurrentRevision,
                 txtNextMajor, txtNextMinor, txtNextBuild, txtNextRevision
             };
@@ -254,6 +286,7 @@ namespace TrainingManagerBuilder
             if (isLoadingSettings) return;
 
             settings.OpenTortoiseGitAfterBuild = chkOpenGitAfterBuild.Checked;
+            settings.SaveSettings();
         }
 
         private void chkOpenOutputFolderAfterBuild_CheckedChanged(object sender, EventArgs e)
@@ -261,6 +294,7 @@ namespace TrainingManagerBuilder
             if (isLoadingSettings) return;
 
             settings.OpenOutputDirectoryAfterBuild = chkOpenOutputFolderAfterBuild.Checked;
+            settings.SaveSettings();
         }
 
         private void chkRememberSource_CheckedChanged(object sender, EventArgs e)

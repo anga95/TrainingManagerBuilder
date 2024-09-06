@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using JsonFormatting = Newtonsoft.Json.Formatting;
@@ -11,8 +10,36 @@ public class UserSettings
     public bool OpenOutputDirectoryAfterBuild { get; set; }
     public bool OpenTortoiseGitAfterBuild { get; set; }
 
+    public bool RememberSourcePath { get; set; }
+    [JsonProperty]
+    private string sourcePath;
+    public string SourcePath
+    {
+        get => !string.IsNullOrEmpty(sourcePath) && Directory.Exists(sourcePath) ? sourcePath : null;
+        set
+        {
+            sourcePath = RememberSourcePath ? value : null;
+            SaveSettings();
+        }
+    }
+
+    public bool RememberOutputPath { get; set; }
+    [JsonProperty]
+    private string outputPath;
+    public string OutputPath
+    {
+        get => !string.IsNullOrEmpty(outputPath) && Directory.Exists(outputPath) ? outputPath : null;
+        set
+        {
+            outputPath = RememberOutputPath ? value : null;
+            SaveSettings();
+        }
+    }
+
+
     private string msbuildPath;
     private string tortoiseGitPath;
+
 
     private UserSettings() { }
 
@@ -47,7 +74,13 @@ public class UserSettings
         if (File.Exists(ConfigFilePath))
         {
             string json = File.ReadAllText(ConfigFilePath);
-            return JsonConvert.DeserializeObject<UserSettings>(json);
+            var loadedSettings = JsonConvert.DeserializeObject<UserSettings>(json);
+
+            // Kontrollera att de privata fälten sätts korrekt vid uppstart
+            loadedSettings.sourcePath = loadedSettings.RememberSourcePath ? loadedSettings.sourcePath : null;
+            loadedSettings.outputPath = loadedSettings.RememberOutputPath ? loadedSettings.outputPath : null;
+
+            return loadedSettings;
         }
 
         return new UserSettings();  // Return default settings if file does not exist
@@ -55,6 +88,14 @@ public class UserSettings
 
     public void SaveSettings()
     {
+        //if (!RememberSourcePath)
+        //{
+        //    SourcePath = null;
+        //}
+        //if (!RememberOutputPath)
+        //{
+        //    OutputPath = null;
+        //}
         string json = JsonConvert.SerializeObject(this, JsonFormatting.Indented);
         File.WriteAllText(ConfigFilePath, json);
     }
@@ -90,15 +131,6 @@ public class UserSettings
         {
             Logger.Log($"Using saved MSBuild path: {msbuildPath}");
             return msbuildPath;
-        }
-
-        // Try to find MSBuild.exe in PATH
-        string msbuildInPath = FindMSBuildInPath();
-        if (!string.IsNullOrEmpty(msbuildInPath))
-        {
-            msbuildPath = msbuildInPath;
-            SaveSettings();
-            return msbuildInPath;
         }
 
         // If MSBuild is not found in PATH, try to find it in common installation paths
@@ -151,38 +183,7 @@ public class UserSettings
         throw new FileNotFoundException("MSBuild.exe could not be located.");
     }
 
-    private string FindMSBuildInPath()
-    {
-        try
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                FileName = "MSBuild.exe",
-                Arguments = "/version",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
 
-            using (Process process = Process.Start(startInfo))
-            {
-                using (StreamReader reader = process.StandardOutput)
-                {
-                    string output = reader.ReadToEnd();
-                    if (process.ExitCode == 0 && output.Contains("Microsoft (R) Build Engine"))
-                    {
-                        return "MSBuild.exe";
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError($"MSBuild not found: {ex.Message}");
-        }
-
-        return null;
-    }
     #endregion
 
     #region TortoiseGit

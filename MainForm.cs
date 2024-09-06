@@ -14,6 +14,7 @@ namespace TrainingManagerBuilder
         private ZipUtilities zipUtilities;
         private UserSettings settings;
         private Dictionary<string, ProgressStepManager> progressSteps;
+        private bool isLoadingSettings = false;
 
         public MainForm()
         {
@@ -24,9 +25,26 @@ namespace TrainingManagerBuilder
             this.Text = "Training Manager Builder";
             btnBuildAndPackage.Enabled = false;
 
+            isLoadingSettings = true;
             chkOpenGitAfterBuild.Enabled = settings.IsTortoiseGitAvailable;
             chkOpenGitAfterBuild.Checked = settings.OpenTortoiseGitAfterBuild;
             chkOpenOutputFolderAfterBuild.Checked = settings.OpenOutputDirectoryAfterBuild;
+
+            chkRememberSource.Checked = settings.RememberSourcePath;
+            chkRememberOutputPath.Checked = settings.RememberOutputPath;
+            if (settings.RememberSourcePath)
+            {
+                txtSourcePath.Text = settings.SourcePath;
+                if (IsValidSourcePath(txtSourcePath.Text))
+                {
+                    LoadVersion();
+                }
+            }
+            if (settings.RememberOutputPath)
+            {
+                txtOutputPath.Text = settings.OutputPath;
+            }
+            isLoadingSettings = false;
 
             progressSteps = new Dictionary<string, ProgressStepManager>
             {
@@ -38,6 +56,19 @@ namespace TrainingManagerBuilder
             };
 
             zipUtilities = new ZipUtilities();
+        }
+
+        private void LoadVersion()
+        {
+            versionManager = new VersionManager(txtSourcePath.Text);
+            LoadCurrentVersion();
+
+            btnBuildAndPackage.Enabled = true;
+
+            if (chkRememberSource.Checked)
+            {
+                settings.SourcePath = txtSourcePath.Text;
+            }
         }
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
@@ -56,13 +87,7 @@ namespace TrainingManagerBuilder
                     // Validate the selected folder
                     if (IsValidSourcePath(txtSourcePath.Text))
                     {
-                        versionManager = new VersionManager(txtSourcePath.Text);
-#if DEBUG
-                        txtOutputPath.Text = @"C:\Users\andgab\Downloads";
-#endif
-                        LoadCurrentVersion();
-
-                        btnBuildAndPackage.Enabled = true;
+                        LoadVersion();
                     }
                     else
                     {
@@ -70,6 +95,27 @@ namespace TrainingManagerBuilder
                             "Invalid Folder",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         btnBuildAndPackage.Enabled = false;
+                    }
+                }
+            }
+        }
+        private void btnBrowseOutput_Click(object sender, EventArgs e)
+        {
+            using (var folderBrowser = new OpenFileDialog())
+            {
+                folderBrowser.ValidateNames = false;
+                folderBrowser.CheckFileExists = false;
+                folderBrowser.CheckPathExists = true;
+                folderBrowser.FileName = "Select Folder";
+
+                if (folderBrowser.ShowDialog() == DialogResult.OK)
+                {
+                    string folderPath = System.IO.Path.GetDirectoryName(folderBrowser.FileName);
+                    txtOutputPath.Text = folderPath;
+
+                    if (chkRememberOutputPath.Checked)
+                    {
+                        settings.OutputPath = txtOutputPath.Text;
                     }
                 }
             }
@@ -97,22 +143,7 @@ namespace TrainingManagerBuilder
             txtNextRevision.Text = nextVersion.Revision.ToString();
         }
 
-        private void btnBrowseOutput_Click(object sender, EventArgs e)
-        {
-            using (var folderBrowser = new OpenFileDialog())
-            {
-                folderBrowser.ValidateNames = false;
-                folderBrowser.CheckFileExists = false;
-                folderBrowser.CheckPathExists = true;
-                folderBrowser.FileName = "Select Folder";
 
-                if (folderBrowser.ShowDialog() == DialogResult.OK)
-                {
-                    string folderPath = System.IO.Path.GetDirectoryName(folderBrowser.FileName);
-                    txtOutputPath.Text = folderPath;
-                }
-            }
-        }
 
 
         public void SetTimersToWaiting()
@@ -220,15 +251,32 @@ namespace TrainingManagerBuilder
 
         private void chkOpenGitAfterBuild_CheckedChanged(object sender, EventArgs e)
         {
-            settings.OpenTortoiseGitAfterBuild = chkOpenGitAfterBuild.Checked;
-            settings.SaveSettings();
+            if (isLoadingSettings) return;
 
+            settings.OpenTortoiseGitAfterBuild = chkOpenGitAfterBuild.Checked;
         }
 
         private void chkOpenOutputFolderAfterBuild_CheckedChanged(object sender, EventArgs e)
         {
+            if (isLoadingSettings) return;
+
             settings.OpenOutputDirectoryAfterBuild = chkOpenOutputFolderAfterBuild.Checked;
-            settings.SaveSettings();
+        }
+
+        private void chkRememberSource_CheckedChanged(object sender, EventArgs e)
+        {
+            if (isLoadingSettings) return;
+
+            settings.RememberSourcePath = chkRememberSource.Checked;
+            settings.SourcePath = txtSourcePath.Text;
+        }
+
+        private void chkRememberOutputPath_CheckedChanged(object sender, EventArgs e)
+        {
+            if (isLoadingSettings) return;
+
+            settings.RememberOutputPath = chkRememberOutputPath.Checked;
+            settings.OutputPath = txtOutputPath.Text;
         }
     }
 }

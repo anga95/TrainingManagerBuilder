@@ -71,6 +71,8 @@ namespace TrainingManagerBuilder
             this.lblStatusWeb = new System.Windows.Forms.Label();
             this.lblStatusCopyZips = new System.Windows.Forms.Label();
             this.lblStatusInstaller = new System.Windows.Forms.Label();
+            this.chkRememberSource = new System.Windows.Forms.CheckBox();
+            this.chkRememberOutputPath = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblSourcePath
@@ -402,11 +404,35 @@ namespace TrainingManagerBuilder
             this.lblStatusInstaller.Size = new System.Drawing.Size(0, 13);
             this.lblStatusInstaller.TabIndex = 40;
             // 
+            // chkRememberSource
+            // 
+            this.chkRememberSource.AutoSize = true;
+            this.chkRememberSource.Location = new System.Drawing.Point(10, 193);
+            this.chkRememberSource.Name = "chkRememberSource";
+            this.chkRememberSource.Size = new System.Drawing.Size(138, 17);
+            this.chkRememberSource.TabIndex = 41;
+            this.chkRememberSource.Text = "Remember Source path";
+            this.chkRememberSource.UseVisualStyleBackColor = true;
+            this.chkRememberSource.CheckedChanged += new System.EventHandler(this.chkRememberSource_CheckedChanged);
+            // 
+            // chkRememberOutputPath
+            // 
+            this.chkRememberOutputPath.AutoSize = true;
+            this.chkRememberOutputPath.Location = new System.Drawing.Point(10, 214);
+            this.chkRememberOutputPath.Name = "chkRememberOutputPath";
+            this.chkRememberOutputPath.Size = new System.Drawing.Size(163, 17);
+            this.chkRememberOutputPath.TabIndex = 42;
+            this.chkRememberOutputPath.Text = "Rememeber Output Directory";
+            this.chkRememberOutputPath.UseVisualStyleBackColor = true;
+            this.chkRememberOutputPath.CheckedChanged += new System.EventHandler(this.chkRememberOutputPath_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(622, 331);
+            this.Controls.Add(this.chkRememberOutputPath);
+            this.Controls.Add(this.chkRememberSource);
             this.Controls.Add(this.lblStatusInstaller);
             this.Controls.Add(this.lblStatusCopyZips);
             this.Controls.Add(this.lblStatusWeb);
@@ -495,5 +521,7 @@ namespace TrainingManagerBuilder
         private Label lblStatusWeb;
         private Label lblStatusCopyZips;
         private Label lblStatusInstaller;
+        private CheckBox chkRememberSource;
+        private CheckBox chkRememberOutputPath;
     }
 }

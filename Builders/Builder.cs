@@ -48,7 +48,7 @@ public abstract class Builder : IBuilder
 
             using (Process process = Process.Start(startInfo))
             {
-                process.WaitForExit(); // Wait for the process to exit
+                process.WaitForExit();
 
                 if (process.ExitCode != 0)
                 {

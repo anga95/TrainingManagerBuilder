@@ -29,18 +29,24 @@ jobs:
     - name: Build solution
       run: msbuild TrainingManagerBuilder.csproj /p:Configuration=Release
 
+    - name: Create zip folder
+      run: |
+        mkdir $env:RUNNER_TEMP\output
+
     - name: Zip output files
       run: |
-        Compress-Archive -Path $env:RUNNER_TEMP\* -DestinationPath $env:RUNNER_TEMP\output.zip
+        Compress-Archive -Path ./YourBuildFolder/* -DestinationPath $env:RUNNER_TEMP\output\output.zip
+      shell: pwsh
+
+    - name: Verify zip file creation
+      run: |
+        if (Test-Path "$env:RUNNER_TEMP\output\output.zip") { Write-Host "Zip file exists." } else { Write-Host "Zip file does not exist." }
       shell: pwsh
 
     - name: Deploy to Dropbox
       uses: aTable/deploy-to-dropbox@v1.0.7
       with:
         DROPBOX_ACCESS_TOKEN: ${{ secrets.DROPBOX_ACCESS_TOKEN }}  # Access Token från Dropbox
-        GLOB: '**/*.zip'  # Glob för att matcha alla zip-filer i projektet
-        DROPBOX_DESTINATION_PATH_PREFIX: '/Appar/CD-github/'  # Sökvägen i Dropbox där filerna ska laddas upp
-        DEBUG: 'false'
-            
-          
-        
+        GLOB: '$env:RUNNER_TEMP/output/output.zip'  # Sökvägen till zip-filen
+        DROPBOX_DESTINATION_PATH_PREFIX: '/Appar/CD-github/'  # Sökvägen i Dropbox
+        DEBUG: 'true'

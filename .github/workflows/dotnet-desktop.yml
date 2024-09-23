@@ -34,13 +34,6 @@ jobs:
         Compress-Archive -Path $env:RUNNER_TEMP\* -DestinationPath $env:RUNNER_TEMP\output.zip
       shell: pwsh
 
-    - name: Upload artifact to Dropbox
-      uses: satterly/dropbox-upload-action@v1
-      with:
-        dropbox-access-token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
-        dropbox-path: /Appar/CD-github/output.zip
-        local-path: ./build/output/output.zip
-
     - name: Deploy to Dropbox
       uses: aTable/deploy-to-dropbox@v1.0.7
       with:

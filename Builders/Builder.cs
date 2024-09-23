@@ -25,7 +25,8 @@ public abstract class Builder : IBuilder
             Logger.LogNewSection($"Starting build for project: {projectName}");
 
             var settings = UserSettings.Instance;
-            string msbuildPath = settings.MSBuildPath;
+            //string msbuildPath = settings.MSBuildPath;
+            string msbuildPath = @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe";
 
             if (string.IsNullOrEmpty(msbuildPath))
             {

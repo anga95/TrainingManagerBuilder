@@ -104,15 +104,15 @@ namespace TrainingManagerBuilder
             // txtSourcePath
             // 
             this.txtSourcePath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtSourcePath.Location = new System.Drawing.Point(178, 3);
+            this.txtSourcePath.Location = new System.Drawing.Point(177, 3);
             this.txtSourcePath.Name = "txtSourcePath";
-            this.txtSourcePath.Size = new System.Drawing.Size(302, 20);
+            this.txtSourcePath.Size = new System.Drawing.Size(300, 20);
             this.txtSourcePath.TabIndex = 1;
             // 
             // btnBrowseSource
             // 
             this.btnBrowseSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnBrowseSource.Location = new System.Drawing.Point(486, 3);
+            this.btnBrowseSource.Location = new System.Drawing.Point(483, 3);
             this.btnBrowseSource.Name = "btnBrowseSource";
             this.btnBrowseSource.Size = new System.Drawing.Size(64, 19);
             this.btnBrowseSource.TabIndex = 2;
@@ -221,9 +221,9 @@ namespace TrainingManagerBuilder
             // txtOutputPath
             // 
             this.txtOutputPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtOutputPath.Location = new System.Drawing.Point(178, 28);
+            this.txtOutputPath.Location = new System.Drawing.Point(177, 28);
             this.txtOutputPath.Name = "txtOutputPath";
-            this.txtOutputPath.Size = new System.Drawing.Size(302, 20);
+            this.txtOutputPath.Size = new System.Drawing.Size(300, 20);
             this.txtOutputPath.TabIndex = 15;
             // 
             // txtOutputDestination
@@ -239,7 +239,7 @@ namespace TrainingManagerBuilder
             // btnBrowseOutput
             // 
             this.btnBrowseOutput.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnBrowseOutput.Location = new System.Drawing.Point(486, 28);
+            this.btnBrowseOutput.Location = new System.Drawing.Point(483, 28);
             this.btnBrowseOutput.Name = "btnBrowseOutput";
             this.btnBrowseOutput.Size = new System.Drawing.Size(64, 19);
             this.btnBrowseOutput.TabIndex = 17;
@@ -595,7 +595,7 @@ namespace TrainingManagerBuilder
             this.tableLayoutPanel3.ColumnCount = 3;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 36.30137F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 63.69863F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 116F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 119F));
             this.tableLayoutPanel3.Controls.Add(this.lblSourcePath, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.txtSourcePath, 1, 0);
             this.tableLayoutPanel3.Controls.Add(this.btnBrowseSource, 2, 0);

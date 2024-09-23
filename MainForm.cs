@@ -91,11 +91,11 @@ namespace TrainingManagerBuilder
 
         private void RemovePlaceholderLabels()
         {
-            lblElapsedTimeFileVersion.Text = "";
-            lblElapsedTimeTM.Text = "";
-            lblElapsedTimeWeb.Text = "";
-            lblElapsedTimeCopyZips.Text = "";
-            lblElapsedTimeInstaller.Text = "";
+            lblStatusFileVersion.Text = "";
+            lblStatusTM.Text = "";
+            lblStatusWeb.Text = "";
+            lblStatusCopyZips.Text = "";
+            lblStatusInstaller.Text = "";
         }
 
         private void LoadVersion()
@@ -206,6 +206,7 @@ namespace TrainingManagerBuilder
 
                 stopwatch.Stop();
                 buildTimer.Stop();
+                Logger.Log($"Build and package completed in {stopwatch.Elapsed.TotalSeconds} seconds.");
 
                 // Open TortoiseGit after build, if selected
                 if (chkOpenGitAfterBuild.Checked)
@@ -219,6 +220,7 @@ namespace TrainingManagerBuilder
                 {
                     OpenOutputFolder(txtOutputPath.Text);
                 }
+
             }
             catch (Exception ex)
             {

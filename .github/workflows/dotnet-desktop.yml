@@ -27,7 +27,7 @@ jobs:
       run: nuget restore
 
     - name: Build solution
-      run: msbuild /p:Configuration=Release
+      run: msbuild TrainingManagerBuilder.csproj /p:Configuration=Release
 
     - name: Zip and move files
       run: |

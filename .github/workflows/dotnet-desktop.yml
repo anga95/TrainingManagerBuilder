@@ -40,3 +40,14 @@ jobs:
         dropbox-access-token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
         dropbox-path: /Appar/CD-github/output.zip
         local-path: ./build/output/output.zip
+
+    - name: Deploy to Dropbox
+      uses: aTable/deploy-to-dropbox@v1.0.7
+      with:
+        DROPBOX_ACCESS_TOKEN: ${{ secrets.DROPBOX_ACCESS_TOKEN }}  # Access Token från Dropbox
+        GLOB: '**/*.zip'  # Glob för att matcha alla zip-filer i projektet
+        DROPBOX_DESTINATION_PATH_PREFIX: '/Appar/CD-github/'  # Sökvägen i Dropbox där filerna ska laddas upp
+        DEBUG: 'false'
+            
+          
+        

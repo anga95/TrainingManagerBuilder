@@ -29,7 +29,7 @@ jobs:
     - name: Build solution
       run: msbuild TrainingManagerBuilder.csproj /p:Configuration=Release
 
-    - name: Zip and move files
+    - name: Zip output files
       run: |
-        Compress-Archive -Path $(Build.ArtifactStagingDirectory)\* -DestinationPath $(Build.ArtifactStagingDirectory)\output.zip
-        Move-Item -Path $(Build.ArtifactStagingDirectory)\output.zip -Destination C:\target\directory\output.zip
+        Compress-Archive -Path $env:RUNNER_TEMP\* -DestinationPath $env:RUNNER_TEMP\output.zip
+      shell: pwsh

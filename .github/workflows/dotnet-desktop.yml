@@ -3,18 +3,26 @@ name: Build .NET Framework 4.7.2 project
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
-    runs-on: windows-latest  # .NET Framework kräver en Windows-miljö
+    runs-on: windows-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
@@ -26,41 +34,35 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore
 
+    - name: Increment version number in version.txt
+      id: version
+      run: |
+        # Läs versionsnummer från version.txt
+        $versionFile = 'version.txt'
+        $version = Get-Content $versionFile
+        $splitVersion = $version.Split('.')
+        
+        # Öka fjärde delen (revision) med 1
+        $splitVersion[3] = [int]$splitVersion[3] + 1
+        
+        $newVersion = $splitVersion -join '.'
+        
+        # Skriv tillbaka det nya versionsnumret till version.txt
+        Set-Content $versionFile $newVersion
+        
+        echo "::set-output name=version::$newVersion"
+      shell: pwsh
+
     - name: Build solution
       run: msbuild TrainingManagerBuilder.csproj /p:Configuration=Release
 
-    - name: Create zip folder
+    - name: Zip output files with version
       run: |
-        mkdir $env:RUNNER_TEMP\output
-
-    - name: Zip output files
-      run: |
-        Compress-Archive -Path ./bin/Release/* -DestinationPath $env:RUNNER_TEMP\output\output.zip -Update
-      shell: pwsh
-
-    - name: Verify zip file creation and set output path
-      id: verify-zip
-      run: |
-        if (Test-Path "$env:RUNNER_TEMP\output\output.zip") { 
-          Write-Host "Zip file exists."
-          Get-ChildItem $env:RUNNER_TEMP\output\output.zip | Format-Table Name, Length
-          echo "::set-output name=zip_path::$env:RUNNER_TEMP\output\output.zip"
-        } else { 
-          Write-Host "Zip file does not exist." 
-          exit 1
-        }
+        Compress-Archive -Path ./bin/Release/* -DestinationPath $env:RUNNER_TEMP\output\build-output-v${{ steps.version.outputs.version }}.zip
       shell: pwsh
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v3
       with:
         name: build-output
-        path: ${{ steps.verify-zip.outputs.zip_path }}
-
-    - name: Upload to Dropbox
-      uses: aTable/deploy-to-dropbox@v1.0.7
-      with:
-        DROPBOX_ACCESS_TOKEN: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
-        GLOB: ${{ steps.verify-zip.outputs.zip_path }}  # Använd korrekt sökväg här
-        DROPBOX_DESTINATION_PATH_PREFIX: '/Appar/CD-github/'
-        DEBUG: 'true'
+        path: $env:RUNNER_TEMP\output\build-output-v${{ steps.version.outputs.version }}.zip

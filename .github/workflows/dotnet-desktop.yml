@@ -1,0 +1,35 @@
+name: Build .NET Framework 4.7.2 project
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest  # .NET Framework kräver en Windows-miljö
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Install .NET Framework 4.7.2 Developer Pack
+      run: |
+        choco install netfx-4.7.2-devpack
+
+    - name: Restore NuGet packages
+      run: nuget restore
+
+    - name: Build solution
+      run: msbuild /p:Configuration=Release
+
+    - name: Zip and move files
+      run: |
+        Compress-Archive -Path $(Build.ArtifactStagingDirectory)\* -DestinationPath $(Build.ArtifactStagingDirectory)\output.zip
+        Move-Item -Path $(Build.ArtifactStagingDirectory)\output.zip -Destination C:\target\directory\output.zip

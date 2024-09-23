@@ -35,7 +35,7 @@ jobs:
 
     - name: Zip output files
       run: |
-        Compress-Archive -Path ./YourBuildFolder/* -DestinationPath $env:RUNNER_TEMP\output\output.zip
+        Compress-Archive -Path ./bin/Release/* -DestinationPath $env:RUNNER_TEMP\output\output.zip
       shell: pwsh
 
     - name: Verify zip file creation
@@ -46,7 +46,7 @@ jobs:
     - name: Deploy to Dropbox
       uses: aTable/deploy-to-dropbox@v1.0.7
       with:
-        DROPBOX_ACCESS_TOKEN: ${{ secrets.DROPBOX_ACCESS_TOKEN }}  # Access Token från Dropbox
-        GLOB: '$env:RUNNER_TEMP/output/output.zip'  # Sökvägen till zip-filen
-        DROPBOX_DESTINATION_PATH_PREFIX: '/Appar/CD-github/'  # Sökvägen i Dropbox
+        DROPBOX_ACCESS_TOKEN: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
+        GLOB: '$env:RUNNER_TEMP/output/output.zip'
+        DROPBOX_DESTINATION_PATH_PREFIX: '/Appar/CD-github/'
         DEBUG: 'true'

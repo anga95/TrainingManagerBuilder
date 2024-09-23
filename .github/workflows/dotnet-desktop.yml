@@ -47,6 +47,6 @@ jobs:
       uses: aTable/deploy-to-dropbox@v1.0.7
       with:
         DROPBOX_ACCESS_TOKEN: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
-        GLOB: '$env:RUNNER_TEMP/output/output.zip'
+        GLOB: '**/output.zip'  # Använd ett generellt glob-mönster för att matcha zip-filen
         DROPBOX_DESTINATION_PATH_PREFIX: '/Appar/CD-github/'
         DEBUG: 'true'

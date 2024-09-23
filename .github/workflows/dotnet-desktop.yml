@@ -35,7 +35,7 @@ jobs:
 
     - name: Zip output files
       run: |
-        Compress-Archive -Path ./bin/Release/* -DestinationPath $env:RUNNER_TEMP\output\output.zip
+        Compress-Archive -Path ./bin/Release/* -DestinationPath $env:RUNNER_TEMP\output\output.zip -Update
       shell: pwsh
 
     - name: Verify zip file creation and set output path

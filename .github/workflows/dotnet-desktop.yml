@@ -38,13 +38,16 @@ jobs:
         Compress-Archive -Path ./bin/Release/* -DestinationPath $env:RUNNER_TEMP\output\output.zip
       shell: pwsh
 
-    - name: Verify zip file creation
+    - name: Verify zip file creation and set output path
+      id: verify-zip
       run: |
         if (Test-Path "$env:RUNNER_TEMP\output\output.zip") { 
           Write-Host "Zip file exists."
           Get-ChildItem $env:RUNNER_TEMP\output\output.zip | Format-Table Name, Length
+          echo "::set-output name=zip_path::$env:RUNNER_TEMP\output\output.zip"
         } else { 
           Write-Host "Zip file does not exist." 
+          exit 1
         }
       shell: pwsh
 
@@ -52,4 +55,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: build-output
-        path: $env:RUNNER_TEMP\output\output.zip
+        path: ${{ steps.verify-zip.outputs.zip_path }}

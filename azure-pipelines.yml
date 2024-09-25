@@ -7,7 +7,7 @@ jobs:
   - task: UseDotNet@2
     inputs:
       packageType: 'sdk'
-      version: '4.x.x'  # Ange rätt .NET SDK-version
+      version: '4.7.2'
 
   - task: Cache@2
     inputs:

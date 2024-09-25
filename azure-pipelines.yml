@@ -3,6 +3,9 @@ trigger:
     include:
       - master  # Kör pipelinen på pushar till master
 
+variables:
+  system.debug: true
+
 pool:
   vmImage: 'windows-latest'
 
@@ -37,6 +40,14 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/output.zip'
     ArtifactName: 'drop'
 
+- powershell: |
+    if (Test-Path "$(Build.ArtifactStagingDirectory)/output.zip") {
+      Write-Host "Zip file exists."
+      Get-ChildItem "$(Build.ArtifactStagingDirectory)" | Format-Table Name, Length
+    } else {
+      Write-Host "Zip file does not exist."
+    }
+  displayName: 'Check if output.zip exists'
 - task: AzureFileCopy@6
   inputs:
     SourcePath: '$(Build.ArtifactStagingDirectory)/output.zip'

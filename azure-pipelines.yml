@@ -1,57 +1,72 @@
 trigger:
   branches:
     include:
-      - master  # Kör pipelinen på pushar till master
-
-variables:
-  system.debug: true
+      - main  # Ändra om du använder en annan branch
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-latest'  # .NET Framework kräver en Windows-miljö
 
 steps:
-- task: NuGetToolInstaller@1
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: '4.7.x'  # Använd den version du vill ha för .NET Framework 4.7.x
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '**/*.sln'
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: true
 
-- task: VSBuild@1
-  inputs:
-    solution: '**/*.sln'
-    msbuildArchitecture: 'x64'
-    configuration: 'Release'
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        $versionFile = 'version.txt'
+        $version = Get-Content $versionFile
+        
+        # Dela upp versionsnumret
+        $parts = $version -split '\.'
+        $major = [int]$parts[0]
+        $minor = [int]$parts[1]
+        $build = [int]$parts[2]
+        $revision = [int]$parts[3]
+        
+        # Inkrementera byggnummer och sätt revision till 0
+        $build++
+        $newVersion = "$major.$minor.$build.0"
+        
+        # Skriv tillbaka den nya versionen till version.txt
+        Set-Content $versionFile $newVersion
+        
+        Write-Host "New version: $newVersion"
+        echo "##vso[task.setvariable variable=versionNumber]$newVersion"
+    displayName: 'Inkrementera versionsnummer'
 
-- task: CopyFiles@2
-  inputs:
-    contents: '**/bin/Release/**'
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
+  - task: VSBuild@1
+    inputs:
+      solution: '**\TrainingManagerBuilder.csproj'
+      msbuildArgs: '/p:Configuration=Release'
 
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/output.zip'
-    replaceExistingArchive: true
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(Build.SourcesDirectory)/bin/Release'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/TMBuilder_$(versionNumber).zip'
+      replaceExistingArchive: true
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/output.zip'
-    ArtifactName: 'drop'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)/TMBuilder_$(versionNumber).zip'
+      artifactName: 'drop'
+      publishLocation: 'Container'
 
-- powershell: |
-    if (Test-Path "$(Build.ArtifactStagingDirectory)/output.zip") {
-      Write-Host "Zip file exists."
-      Get-ChildItem "$(Build.ArtifactStagingDirectory)" | Format-Table Name, Length
-    } else {
-      Write-Host "Zip file does not exist."
-    }
-  displayName: 'Check if output.zip exists'
-- task: AzureFileCopy@6
-  inputs:
-    SourcePath: '$(Build.ArtifactStagingDirectory)/output.zip'
-    azureSubscription: 'Visual Studio Enterprise-prenumeration – MPN(ec55fd8c-40bb-48eb-af15-7cd489bc9116)'
-    Destination: 'AzureBlob'
-    storage: 'tmbuilderstorage'
-    ContainerName: 'tmbuilder-container'
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        git config --local user.email "action@azuredevops.com"
+        git config --local user.name "Azure DevOps"
+        git add version.txt
+        git commit -m "Increment version to $(versionNumber)"
+        git push
+    displayName: 'Commit updated version file'

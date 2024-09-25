@@ -7,11 +7,6 @@ pool:
   vmImage: 'windows-latest'  # .NET Framework kräver en Windows-miljö
 
 steps:
-  - task: UseDotNet@2
-    inputs:
-      packageType: 'sdk'
-      version: '4.7.x'  # Använd den version du vill ha för .NET Framework 4.7.x
-
   - task: NuGetCommand@2
     inputs:
       restoreSolution: true

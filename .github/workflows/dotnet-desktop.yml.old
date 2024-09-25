@@ -1,0 +1,68 @@
+name: Build .NET Framework 4.7.2 project
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Install .NET Framework 4.7.2 Developer Pack
+      run: |
+        choco install netfx-4.7.2-devpack
+
+    - name: Restore NuGet packages
+      run: nuget restore
+
+    - name: Increment version number in version.txt
+      id: version
+      run: |
+        # Läs versionsnummer från version.txt
+        $versionFile = 'version.txt'
+        $version = Get-Content $versionFile
+        $splitVersion = $version.Split('.')
+        
+        # Öka fjärde delen (revision) med 1
+        $splitVersion[3] = [int]$splitVersion[3] + 1
+        
+        $newVersion = $splitVersion -join '.'
+        
+        # Skriv tillbaka det nya versionsnumret till version.txt
+        Set-Content $versionFile $newVersion
+        
+        echo "::set-output name=version::$newVersion"
+      shell: pwsh
+
+    - name: Build solution
+      run: msbuild TrainingManagerBuilder.csproj /p:Configuration=Release
+
+    - name: Zip output files with version
+      run: |
+        Compress-Archive -Path ./bin/Release/* -DestinationPath $env:RUNNER_TEMP\output\build-output-v${{ steps.version.outputs.version }}.zip
+      shell: pwsh
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-output
+        path: $env:RUNNER_TEMP\output\build-output-v${{ steps.version.outputs.version }}.zip

@@ -43,6 +43,18 @@ steps:
       }
   displayName: 'Inkrementera versionsnummer'
 
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      git config --local user.email "action@azuredevops.com"
+      git config --local user.name "Azure DevOps"
+      git add version.txt
+      git commit -m "Increment version to $newVersion"
+      git push origin master  # Committa till main-branchen
+  env:
+    System.AccessToken: $(System.AccessToken)
+  
 - task: VSBuild@1
   inputs:
     solution: '**/*.sln'
@@ -67,18 +79,4 @@ steps:
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/TMBuilder_$(versionNumber).zip'
     ArtifactName: 'drop'
-    
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      git fetch origin  # Hämta alla grenar
-      git checkout $env:Build_SourceBranchName
-      git config --local user.email "action@azuredevops.com"
-      git config --local user.name "Azure DevOps"
-      git add version.txt
-      git commit -m "Increment version to $(versionNumber)"
-      git push $env:Build_SourceBranchName
-  displayName: 'Commit updated version file'
-  env:
-    System.AccessToken: $(System.AccessToken)
+

@@ -72,6 +72,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      git fetch origin
       git config --local user.email "action@azuredevops.com"
       git config --local user.name "Azure DevOps"
       git checkout master

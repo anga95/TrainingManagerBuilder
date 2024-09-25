@@ -1,68 +1,26 @@
-trigger:
-  branches:
-    include:
-      - main  # Ändra om du använder en annan branch
+jobs:
+- job: Build
+  pool:
+    vmImage: 'windows-latest'
 
-pool:
-  vmImage: 'windows-latest'  # .NET Framework kräver en Windows-miljö
-
-steps:
-  - task: NuGetCommand@2
+  steps:
+  - task: UseDotNet@2
     inputs:
-      command: 'restore'
-      restoreSolution: true
+      packageType: 'sdk'
+      version: '4.x.x'  # Ange rätt .NET SDK-version
 
-  - task: PowerShell@2
+  - task: Cache@2
     inputs:
-      targetType: 'inline'
-      script: |
-        $versionFile = 'version.txt'
-        $version = Get-Content $versionFile
-        
-        # Dela upp versionsnumret
-        $parts = $version -split '\.'
-        $major = [int]$parts[0]
-        $minor = [int]$parts[1]
-        $build = [int]$parts[2]
-        $revision = [int]$parts[3]
-        
-        # Inkrementera byggnummer och sätt revision till 0
-        $build++
-        $newVersion = "$major.$minor.$build.0"
-        
-        # Skriv tillbaka den nya versionen till version.txt
-        Set-Content $versionFile $newVersion
-        
-        Write-Host "New version: $newVersion"
-        echo "##vso[task.setvariable variable=versionNumber]$newVersion"
-    displayName: 'Inkrementera versionsnummer'
+      key: 'nuget | $(Agent.OS) | **/*.csproj'  # Nyckel baserat på operativsystem och projektfiler
+      path: ~/.nuget/packages
+      cacheHitVar: 'NUGET_CACHE_RESTORED'  # Spara resultatet av cacheträff
+
+  - script: |
+      nuget restore
+    displayName: 'Restore NuGet packages'
+    condition: ne(variables.NUGET_CACHE_RESTORED, 'true')  # Kör endast om cacheträff inte hittades
 
   - task: VSBuild@1
     inputs:
-      solution: '**\TrainingManagerBuilder.csproj'
-      msbuildArgs: '/p:Configuration=Release'
-
-  - task: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: '$(Build.SourcesDirectory)/bin/Release'
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/TMBuilder_$(versionNumber).zip'
-      replaceExistingArchive: true
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: '$(Build.ArtifactStagingDirectory)/TMBuilder_$(versionNumber).zip'
-      artifactName: 'drop'
-      publishLocation: 'Container'
-
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: |
-        git config --local user.email "action@azuredevops.com"
-        git config --local user.name "Azure DevOps"
-        git add version.txt
-        git commit -m "Increment version to $(versionNumber)"
-        git push
-    displayName: 'Commit updated version file'
+      solution: '**/*.sln'
+      msbuildArchitecture: 'x64'

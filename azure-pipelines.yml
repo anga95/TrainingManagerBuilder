@@ -30,8 +30,8 @@ steps:
           $revision = [int]$parts[3]
           
           # Inkrementera byggnummer och sätt revision till 0
-          $build++
-          $newVersion = "$major.$minor.$build.0"
+          $revision++
+          $newVersion = "$major.$minor.$build.$revision"
           
           # Skriv tillbaka den nya versionen till version.txt
           Set-Content $versionFile $newVersion
@@ -67,15 +67,3 @@ steps:
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/TMBuilder_$(versionNumber).zip'
     ArtifactName: 'drop'
-
-# Lägg till ett steg för att committa tillbaka den uppdaterade version.txt-filen
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      git config --local user.email "action@azuredevops.com"
-      git config --local user.name "Azure DevOps"
-      git add version.txt
-      git commit -m "Increment version to $(versionNumber)"
-      git push
-  displayName: 'Commit updated version file'

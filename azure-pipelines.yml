@@ -1,0 +1,46 @@
+trigger:
+  branches:
+    include:
+      - master  # Kör pipelinen på pushar till master
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '**/*.sln'
+
+- task: VSBuild@1
+  inputs:
+    solution: '**/*.sln'
+    msbuildArchitecture: 'x64'
+    configuration: 'Release'
+
+- task: CopyFiles@2
+  inputs:
+    contents: '**/bin/Release/**'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/output.zip'
+    replaceExistingArchive: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/output.zip'
+    ArtifactName: 'drop'
+
+- task: AzureFileCopy@6
+  inputs:
+    SourcePath: '$(Build.ArtifactStagingDirectory)/output.zip'
+    azureSubscription: 'Visual Studio Enterprise-prenumeration – MPN(ec55fd8c-40bb-48eb-af15-7cd489bc9116)'
+    Destination: 'AzureBlob'
+    storage: 'tmbuilderstorage'
+    ContainerName: 'tmbuilder-container'

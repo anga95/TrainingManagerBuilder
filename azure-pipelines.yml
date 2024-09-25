@@ -1,26 +1,38 @@
-jobs:
-- job: Build
-  pool:
-    vmImage: 'windows-latest'
+trigger:
+  branches:
+    include:
+      - master  # Kör pipelinen på pushar till master
 
-  steps:
-  - task: UseDotNet@2
-    inputs:
-      packageType: 'sdk'
-      version: '4.7.2'
+pool:
+  vmImage: 'windows-latest'
 
-  - task: Cache@2
-    inputs:
-      key: 'nuget | $(Agent.OS) | **/*.csproj'  # Nyckel baserat på operativsystem och projektfiler
-      path: ~/.nuget/packages
-      cacheHitVar: 'NUGET_CACHE_RESTORED'  # Spara resultatet av cacheträff
+steps:
+- task: NuGetToolInstaller@1
 
-  - script: |
-      nuget restore
-    displayName: 'Restore NuGet packages'
-    condition: ne(variables.NUGET_CACHE_RESTORED, 'true')  # Kör endast om cacheträff inte hittades
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '**/*.sln'
 
-  - task: VSBuild@1
-    inputs:
-      solution: '**/*.sln'
-      msbuildArchitecture: 'x64'
+- task: VSBuild@1
+  inputs:
+    solution: '**/*.sln'
+    msbuildArchitecture: 'x64'
+    configuration: 'Release'
+
+- task: CopyFiles@2
+  inputs:
+    contents: '**/bin/Release/**'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/output.zip'
+    replaceExistingArchive: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/output.zip'
+    ArtifactName: 'drop'

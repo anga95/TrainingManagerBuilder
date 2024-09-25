@@ -67,3 +67,15 @@ steps:
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/TMBuilder_$(versionNumber).zip'
     ArtifactName: 'drop'
+    
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      git config --local user.email "action@azuredevops.com"
+      git config --local user.name "Azure DevOps"
+      git checkout master
+      git add version.txt
+      git commit -m "Increment version to $(versionNumber)"
+      git push origin master
+  displayName: 'Commit updated version file'

@@ -9,6 +9,7 @@ pool:
 steps:
   - task: NuGetCommand@2
     inputs:
+      command: 'restore'
       restoreSolution: true
 
   - task: PowerShell@2

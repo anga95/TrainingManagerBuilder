@@ -72,11 +72,13 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      git fetch origin
+      git fetch origin  # Hämta alla grenar
+      git checkout master
       git config --local user.email "action@azuredevops.com"
       git config --local user.name "Azure DevOps"
-      git checkout master
       git add version.txt
       git commit -m "Increment version to $(versionNumber)"
-      git push origin master
+      git push https://$(System.AccessToken)@github.com/anga95/TrainingManagerBuilder.git HEAD:master
   displayName: 'Commit updated version file'
+  env:
+    System.AccessToken: $(System.AccessToken)

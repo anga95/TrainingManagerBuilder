@@ -3,9 +3,11 @@
 Not tested, update this file if this is not correct.
 
 Run vs_buildTools.exe and install: 
-1. ".NET desktop build tools" and
+1. ".NET desktop build tools" 
+ITS IMPORTANT THET YOU GET FOR VISUAL STUDIO 2017, something like: "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
 2. "Web development build tools" (probably needed to build website, but not 100% sure about this)
 
 This will install the necessary tools to build Training Manager with this program.
+link: https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2017
 
 ####################################################################################################

@@ -12,8 +12,6 @@ namespace TrainingManagerBuilder
     public partial class MainForm : Form
     {
         private VersionManager versionManager;
-
-        private ZipUtilities zipUtilities;
         private UserSettings settings;
         private Dictionary<string, ProgressStepManager> progressSteps;
         private bool isLoadingSettings = false;
@@ -24,33 +22,12 @@ namespace TrainingManagerBuilder
         public MainForm()
         {
             InitializeComponent();
-            RemovePlaceholderLabels();
             settings = UserSettings.Instance;
+            this.Load += MainForm_Load;
 
             this.Icon = new Icon(AppDomain.CurrentDomain.BaseDirectory + "svincoolvalmetlogga.ico");
             this.Text = "Training Manager Builder";
             btnRebuildAndPackage.Enabled = false;
-
-            chkOpenGitAfterBuild.Enabled = settings.IsTortoiseGitAvailable;
-            chkOpenGitAfterBuild.Checked = settings.OpenTortoiseGitAfterBuild;
-            chkOpenOutputFolderAfterBuild.Checked = settings.OpenOutputDirectoryAfterBuild;
-
-            isLoadingSettings = true;
-            chkRememberSource.Checked = settings.RememberSourcePath;
-            chkRememberOutputPath.Checked = settings.RememberOutputPath;
-            if (settings.RememberSourcePath)
-            {
-                txtSourcePath.Text = settings.SourcePath;
-                if (IsValidSourcePath(txtSourcePath.Text))
-                {
-                    LoadVersion();
-                }
-            }
-            if (settings.RememberOutputPath)
-            {
-                txtOutputPath.Text = settings.OutputPath;
-            }
-            isLoadingSettings = false;
 
             progressSteps = new Dictionary<string, ProgressStepManager>
             {
@@ -61,7 +38,43 @@ namespace TrainingManagerBuilder
                 { "BuildInstaller", new ProgressStepManager(lblBuildInstaller, progressBarInstaller, lblElapsedTimeInstaller, lblStatusInstaller) }
             };
             InitTimerAndStopwatch();
-            zipUtilities = new ZipUtilities();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                RemovePlaceholderLabels();
+
+                isLoadingSettings = true;
+                chkOpenGitAfterBuild.Enabled = settings.IsTortoiseGitAvailable;
+                chkOpenGitAfterBuild.Checked = settings.OpenTortoiseGitAfterBuild;
+                chkOpenOutputFolderAfterBuild.Checked = settings.OpenOutputDirectoryAfterBuild;
+                chkRememberSource.Checked = settings.RememberSourcePath;
+                chkRememberOutputPath.Checked = settings.RememberOutputPath;
+
+                if (settings.RememberSourcePath)
+                {
+                    txtSourcePath.Text = settings.SourcePath;
+                    if (IsValidSourcePath(txtSourcePath.Text))
+                    {
+                        LoadVersion();
+                    }
+                }
+                if (settings.RememberOutputPath)
+                {
+                    txtOutputPath.Text = settings.OutputPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                isLoadingSettings = false;
+            }
         }
 
         private void InitTimerAndStopwatch()
@@ -139,6 +152,7 @@ namespace TrainingManagerBuilder
                 }
             }
         }
+
         private void btnBrowseOutput_Click(object sender, EventArgs e)
         {
             using (var folderBrowser = new OpenFileDialog())
@@ -164,6 +178,8 @@ namespace TrainingManagerBuilder
         private bool IsValidSourcePath(string folderPath)
         {
             // Check if the folder contains a .sln file
+            if (!Directory.Exists(folderPath)) return false;
+
             var solutionFiles = Directory.GetFiles(folderPath, "*.sln");
             return solutionFiles.Length > 0;
         }
@@ -185,28 +201,28 @@ namespace TrainingManagerBuilder
 
         private async void btnRebuildAndPackage_Click(object sender, EventArgs e)
         {
-            LockControls();
 
             string oldVersion = $"{txtCurrentMajor.Text}.{txtCurrentMinor.Text}.{txtCurrentBuild.Text}.{txtCurrentRevision.Text}";
             string newVersion = $"{txtNextMajor.Text}.{txtNextMinor.Text}.{txtNextBuild.Text}.{txtNextRevision.Text}";
 
             try
             {
-                stopwatch.Restart();
-                buildTimer.Start();
-                BuildManager buildManager = new BuildManager(txtSourcePath.Text, zipUtilities, progressSteps);
+                StartBuildTimer();
+                BuildManager buildManager = new BuildManager(txtSourcePath.Text, progressSteps, txtOutputPath.Text,
+                    newVersion, oldVersion);
 
-                // Build and package the project
-                await buildManager.BuildAndPackage(
-                    txtOutputPath.Text,
-                    txtSourcePath.Text,
-                    oldVersion,
-                    newVersion
-                );
 
-                stopwatch.Stop();
-                buildTimer.Stop();
-                Logger.Log($"Build and package completed in {stopwatch.Elapsed.TotalSeconds} seconds.");
+                // BuildAsync and package the project
+                bool buildSuccess = await buildManager.BuildAndPackage();
+                StopBuildTimer();
+                if (!buildSuccess)
+                {
+                    Logger.LogError("Build and package failed for whole project.");
+                    throw new Exception("Build and package failed for whole project.");
+                }
+
+
+                Logger.Log($"BuildAsync and package completed in {stopwatch.Elapsed.TotalSeconds} seconds.");
 
                 // Open TortoiseGit after build, if selected
                 if (chkOpenGitAfterBuild.Checked)
@@ -231,6 +247,30 @@ namespace TrainingManagerBuilder
                 UnlockControls();
             }
 
+        }
+
+        private void StartBuildTimer()
+        {
+            LockControls();
+            stopwatch.Restart();
+            buildTimer.Start();
+        }
+
+        private void StopBuildTimer()
+        {
+            stopwatch.Stop();
+            buildTimer.Stop();
+            if (btnRebuildAndPackage.InvokeRequired)
+            {
+                btnRebuildAndPackage.Invoke(new Action(() =>
+                {
+                    btnRebuildAndPackage.Text = $"Building Done\nTotal time: {stopwatch.Elapsed:mm\\:ss}";
+                }));
+            }
+            else
+            {
+                btnRebuildAndPackage.Text = $"Building Done\nTotal time: {stopwatch.Elapsed:mm\\:ss}";
+            }
         }
 
         private void SetControlState(bool isEnabled)
@@ -288,7 +328,6 @@ namespace TrainingManagerBuilder
             if (isLoadingSettings) return;
 
             settings.OpenTortoiseGitAfterBuild = chkOpenGitAfterBuild.Checked;
-            settings.SaveSettings();
         }
 
         private void chkOpenOutputFolderAfterBuild_CheckedChanged(object sender, EventArgs e)
@@ -296,7 +335,6 @@ namespace TrainingManagerBuilder
             if (isLoadingSettings) return;
 
             settings.OpenOutputDirectoryAfterBuild = chkOpenOutputFolderAfterBuild.Checked;
-            settings.SaveSettings();
         }
 
         private void chkRememberSource_CheckedChanged(object sender, EventArgs e)
@@ -313,6 +351,14 @@ namespace TrainingManagerBuilder
 
             settings.RememberOutputPath = chkRememberOutputPath.Checked;
             settings.OutputPath = txtOutputPath.Text;
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            buildTimer?.Stop();
+            buildTimer?.Dispose();
+            stopwatch?.Stop();
+            base.OnFormClosing(e);
         }
     }
 }

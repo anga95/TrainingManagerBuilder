@@ -1,71 +1,102 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
-
-public abstract class Builder : IBuilder
+public class Builder
 {
-    protected string solutionPath;
-    protected string projectName;
+    protected string sourcePath;
+    protected string projectFilePath;
+    protected string configuration = "Release";
+    protected string buildMode = "Rebuild";
+    protected string platform = "AnyCPU";
 
+    public string ProjectName => Path.GetFileNameWithoutExtension(projectFilePath);
 
-    public Builder(string solutionPath, string projectName)
+    public Builder(string sourcePath, string projectFilePath)
     {
-        this.solutionPath = solutionPath;
-        this.projectName = projectName;
+        this.sourcePath = sourcePath;
+        this.projectFilePath = projectFilePath;
     }
 
-    public virtual void Build()
+    public virtual async Task<bool> BuildAsync()
     {
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
 
         try
         {
-            Logger.LogNewSection($"Starting build for project: {projectName}");
+            Logger.LogNewSection($"Starting build for project: {ProjectName}");
 
-            var settings = UserSettings.Instance;
-            //string msbuildPath = settings.MSBuildPath;
-            string msbuildPath = @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe";
-
-            if (string.IsNullOrEmpty(msbuildPath))
+            // Use MSBuild from Visual Studio 2017
+            UserSettings settings = UserSettings.Instance;
+            string msbuildExePath = settings.MSBuildPath;
+            if (!File.Exists(msbuildExePath))
             {
-                throw new FileNotFoundException("MSBuild path is not set or invalid.");
+                throw new FileNotFoundException("MSBuild path is not set or invalid.", msbuildExePath);
             }
 
-            string arguments = $"\"{solutionPath}\" /t:Rebuild /p:Configuration=Release /p:ProjectName={projectName}";
+            // Prepare MSBuild arguments
+            string trimmedSourcePath = sourcePath.TrimEnd('\\');
+            string solutionDir = trimmedSourcePath + @"\\";
 
-            // RedirectStandardOutput and RedirectStandardError are not used because MSBuild output is too verbose.
-            // Only use this if you want to capture the output/debug.
+            string arguments = $"\"{projectFilePath}\" /t:{buildMode} /p:Configuration={configuration};Platform=\"{platform}\";VisualStudioVersion=15.0;SolutionDir=\"{solutionDir}\" /v:diag";
+
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = msbuildPath,
+                FileName = msbuildExePath,
                 Arguments = arguments,
-                //RedirectStandardOutput = true,
-                //RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                WorkingDirectory = Path.GetDirectoryName(projectFilePath),
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             };
 
-            using (Process process = Process.Start(startInfo))
+            using (Process process = new Process { StartInfo = startInfo })
             {
-                process.WaitForExit();
+                process.Start();
 
-                if (process.ExitCode != 0)
+                var outputTask = process.StandardOutput.ReadToEndAsync();
+                var errorTask = process.StandardError.ReadToEndAsync();
+
+                await Task.Run(() => process.WaitForExit()); stopwatch.Stop();
+
+                // Wait for the output and error streams to complete
+                string output = await outputTask;
+                string error = await errorTask;
+
+                if (process.ExitCode == 0)
                 {
-                    Logger.Log($"MSBuild exit code: {process.ExitCode}");
+                    Logger.Log($"Build for project {ProjectName} completed successfully in {stopwatch.Elapsed.TotalSeconds:F2} seconds.");
+                    return true;
+                }
+                else
+                {
+                    string logFilePath = Path.Combine(Path.GetDirectoryName(projectFilePath), "build.log");
+                    File.WriteAllText(logFilePath, output + Environment.NewLine + error);
+                    Logger.LogError($"Build failed with exit code {process.ExitCode}.");
+                    Logger.LogError($"Build output written to {logFilePath}");
+                    return false;
                 }
             }
-
-
-            stopwatch.Stop();
-            Logger.Log($"Build for project {projectName} completed successfully in {stopwatch.Elapsed.TotalSeconds} seconds.");
         }
         catch (Exception ex)
         {
             stopwatch.Stop();
-            Logger.LogError($"Build for project {projectName} failed after {stopwatch.Elapsed.TotalSeconds} seconds. Error: {ex.Message}");
+            Logger.LogError($"BuildAsync for project {ProjectName} failed after {stopwatch.Elapsed.TotalSeconds:F2} seconds. Exception: {ex.Message}");
+            return false;
         }
     }
-    public abstract void Clean();
+    public void DeleteInstallerBinDirectory()
+    {
+        string projectDirectory = Path.Combine(sourcePath, "TMInstaller");
+        string binPath = Path.Combine(projectDirectory, "bin");
+
+        if (Directory.Exists(binPath))
+        {
+            Directory.Delete(binPath, true);
+            Logger.Log("Deleted bin folder in TMInstaller");
+        }
+    }
 }

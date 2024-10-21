@@ -1,82 +1,128 @@
 trigger:
   branches:
     include:
-      - master  # Kör pipelinen på pushar till master
+      - master
 
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+
 steps:
-- task: NuGetToolInstaller@1
+- checkout: self
+  persistCredentials: true
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '**/*.sln'
-
-# Lägg till ett steg för att läsa och inkrementera versionsnumret
+# Steg för att läsa och uppdatera version.txt
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: |
+      # Läs nuvarande version från version.txt
       $versionFile = 'version.txt'
-      if (Test-Path $versionFile) {
-          $version = Get-Content $versionFile
-          
-          # Dela upp versionsnumret
-          $parts = $version -split '\.'
-          $major = [int]$parts[0]
-          $minor = [int]$parts[1]
-          $build = [int]$parts[2]
-          $revision = [int]$parts[3]
-          
-          # Inkrementera byggnummer och sätt revision till 0
-          $revision++
-          $newVersion = "$major.$minor.$build.$revision"
-          
-          # Skriv tillbaka den nya versionen till version.txt
-          Set-Content $versionFile $newVersion
-          
-          Write-Host "New version: $newVersion"
-          echo "##vso[task.setvariable variable=versionNumber]$newVersion"
-      } else {
-          Write-Error "version.txt not found!"
-      }
-  displayName: 'Inkrementera versionsnummer'
+      $version = Get-Content $versionFile
 
-- task: PowerShell@2
+      # Dela upp versionen i dess delar (Major.Minor.Build.Revision)
+      $versionParts = $version -split '\.'
+
+      # Öka revisionsnumret (sista delen) med 1
+      $versionParts[3] = [int]$versionParts[3] + 1
+
+      # Sätt ihop den nya versionen
+      $newVersion = "$($versionParts[0]).$($versionParts[1]).$($versionParts[2]).$($versionParts[3])"
+
+      # Spara den nya versionen i version.txt
+      Set-Content -Path $versionFile -Value $newVersion
+
+      # Visa den nya versionen i pipeline-loggen
+      Write-Host "Updated version: $newVersion"
+
+      # Sätt en Azure Pipeline-variabel för att kunna använda versionen senare
+      echo "##vso[task.setvariable variable=BuildVersion]$newVersion"
+
+- task: NuGetToolInstaller@1
+  displayName: 'Install NuGet tool'
+
+# Cache NuGet-paket
+- task: Cache@2
+  displayName: 'Cache NuGet packages'
   inputs:
-    targetType: 'inline'
-    script: |
-      git config --local user.email "action@azuredevops.com"
-      git config --local user.name "Azure DevOps"
-      git add version.txt
-      git commit -m "Increment version to $newVersion"
-      git push origin master  # Committa till main-branchen
-  env:
-    System.AccessToken: $(System.AccessToken)
-  
+    key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
+    restoreKeys: |
+       nuget | "$(Agent.OS)"
+       nuget
+    path: '$(NUGET_PACKAGES)'
+    cacheHitVar: 'CACHE_RESTORED'
+
+# Restore NuGet packages
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    command: 'restore'
+    restoreSolution: '$(solution)'
+
+# Bygg med Visual Studio
 - task: VSBuild@1
+  displayName: 'Build solution'
   inputs:
-    solution: '**/*.sln'
-    msbuildArchitecture: 'x64'
-    configuration: 'Release'
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
+# Kopiera byggresultat till Artifact Staging Directory
 - task: CopyFiles@2
+  displayName: 'Copy build output to staging'
   inputs:
     contents: '**/bin/Release/**'
     targetFolder: '$(Build.ArtifactStagingDirectory)'
 
-# Uppdatera arkivnamnet med versionsnumret
+# Arkivera och ge zip-filen ett namn baserat på versionen
 - task: ArchiveFiles@2
+  displayName: 'Archive build output'
   inputs:
     rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/TMBuilder_$(versionNumber).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/TMBuilder.zip'
     replaceExistingArchive: true
 
+# Publicera artefakten
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish build artifacts'
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/TMBuilder_$(versionNumber).zip'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/TMBuilder.zip'
     ArtifactName: 'drop'
 
+- task: VSTest@2
+  displayName: 'Kör enhetstester'
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*test*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    codeCoverageEnabled: true  # Valfritt: Aktivera kodtäckning
+    diagnosticsEnabled: true    # Valfritt: Aktivera diagnostikloggar
+
+# Steg 6: Publicera testresultat
+- task: PublishTestResults@2
+  displayName: 'Publicera testresultat'
+  inputs:
+    testResultsFiles: '**/TestResults/*.trx'
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    testRunTitle: 'Enhetstester'
+    mergeTestResults: true
+    publishRunAttachments: true
+
+# Steg 7: Publicera kodtäckning (valfritt)
+- task: PublishCodeCoverageResults@2
+  displayName: 'Publicera kodtäckning'
+  condition: succeededOrFailed()  # Detta säkerställer att steget körs även om tidigare steg misslyckas
+  inputs:
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.cobertura.xml'

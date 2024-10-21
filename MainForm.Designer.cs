@@ -11,7 +11,7 @@ namespace TrainingManagerBuilder
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        ///  Clean up any resources being used.
+        ///  DeleteInstallerBinDirectory up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
@@ -51,8 +51,6 @@ namespace TrainingManagerBuilder
             this.btnBrowseOutput = new System.Windows.Forms.Button();
             this.progressBarUpdateFileVersions = new System.Windows.Forms.ProgressBar();
             this.lblUpdateFileVersions = new System.Windows.Forms.Label();
-            this.lblBuildTM = new System.Windows.Forms.Label();
-            this.progressBarTM = new System.Windows.Forms.ProgressBar();
             this.lblBuildWeb = new System.Windows.Forms.Label();
             this.progressBarWeb = new System.Windows.Forms.ProgressBar();
             this.lblCopyZips = new System.Windows.Forms.Label();
@@ -60,14 +58,12 @@ namespace TrainingManagerBuilder
             this.lblBuildInstaller = new System.Windows.Forms.Label();
             this.progressBarInstaller = new System.Windows.Forms.ProgressBar();
             this.lblElapsedTimeFileVersion = new System.Windows.Forms.Label();
-            this.lblElapsedTimeTM = new System.Windows.Forms.Label();
             this.lblElapsedTimeWeb = new System.Windows.Forms.Label();
             this.lblElapsedTimeCopyZips = new System.Windows.Forms.Label();
             this.lblElapsedTimeInstaller = new System.Windows.Forms.Label();
             this.chkOpenGitAfterBuild = new System.Windows.Forms.CheckBox();
             this.chkOpenOutputFolderAfterBuild = new System.Windows.Forms.CheckBox();
             this.lblStatusFileVersion = new System.Windows.Forms.Label();
-            this.lblStatusTM = new System.Windows.Forms.Label();
             this.lblStatusWeb = new System.Windows.Forms.Label();
             this.lblStatusCopyZips = new System.Windows.Forms.Label();
             this.lblStatusInstaller = new System.Windows.Forms.Label();
@@ -75,6 +71,10 @@ namespace TrainingManagerBuilder
             this.chkRememberOutputPath = new System.Windows.Forms.CheckBox();
             this.gbProgress = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.lblBuildTM = new System.Windows.Forms.Label();
+            this.lblStatusTM = new System.Windows.Forms.Label();
+            this.progressBarTM = new System.Windows.Forms.ProgressBar();
+            this.lblElapsedTimeTM = new System.Windows.Forms.Label();
             this.gbSettings = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tlpVersions = new System.Windows.Forms.TableLayoutPanel();
@@ -104,15 +104,15 @@ namespace TrainingManagerBuilder
             // txtSourcePath
             // 
             this.txtSourcePath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtSourcePath.Location = new System.Drawing.Point(177, 3);
+            this.txtSourcePath.Location = new System.Drawing.Point(176, 3);
             this.txtSourcePath.Name = "txtSourcePath";
-            this.txtSourcePath.Size = new System.Drawing.Size(299, 20);
+            this.txtSourcePath.Size = new System.Drawing.Size(297, 20);
             this.txtSourcePath.TabIndex = 1;
             // 
             // btnBrowseSource
             // 
             this.btnBrowseSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnBrowseSource.Location = new System.Drawing.Point(482, 3);
+            this.btnBrowseSource.Location = new System.Drawing.Point(479, 3);
             this.btnBrowseSource.Name = "btnBrowseSource";
             this.btnBrowseSource.Size = new System.Drawing.Size(64, 19);
             this.btnBrowseSource.TabIndex = 2;
@@ -221,9 +221,9 @@ namespace TrainingManagerBuilder
             // txtOutputPath
             // 
             this.txtOutputPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtOutputPath.Location = new System.Drawing.Point(177, 28);
+            this.txtOutputPath.Location = new System.Drawing.Point(176, 28);
             this.txtOutputPath.Name = "txtOutputPath";
-            this.txtOutputPath.Size = new System.Drawing.Size(299, 20);
+            this.txtOutputPath.Size = new System.Drawing.Size(297, 20);
             this.txtOutputPath.TabIndex = 15;
             // 
             // txtOutputDestination
@@ -239,7 +239,7 @@ namespace TrainingManagerBuilder
             // btnBrowseOutput
             // 
             this.btnBrowseOutput.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnBrowseOutput.Location = new System.Drawing.Point(482, 28);
+            this.btnBrowseOutput.Location = new System.Drawing.Point(479, 28);
             this.btnBrowseOutput.Name = "btnBrowseOutput";
             this.btnBrowseOutput.Size = new System.Drawing.Size(64, 19);
             this.btnBrowseOutput.TabIndex = 17;
@@ -265,29 +265,11 @@ namespace TrainingManagerBuilder
             this.lblUpdateFileVersions.TabIndex = 19;
             this.lblUpdateFileVersions.Text = "Update File Versions";
             // 
-            // lblBuildTM
-            // 
-            this.lblBuildTM.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblBuildTM.AutoSize = true;
-            this.lblBuildTM.Location = new System.Drawing.Point(3, 38);
-            this.lblBuildTM.Name = "lblBuildTM";
-            this.lblBuildTM.Size = new System.Drawing.Size(86, 13);
-            this.lblBuildTM.TabIndex = 21;
-            this.lblBuildTM.Text = "Build and zip TM";
-            // 
-            // progressBarTM
-            // 
-            this.progressBarTM.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.progressBarTM.Location = new System.Drawing.Point(115, 35);
-            this.progressBarTM.Name = "progressBarTM";
-            this.progressBarTM.Size = new System.Drawing.Size(89, 20);
-            this.progressBarTM.TabIndex = 20;
-            // 
             // lblBuildWeb
             // 
             this.lblBuildWeb.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblBuildWeb.AutoSize = true;
-            this.lblBuildWeb.Location = new System.Drawing.Point(3, 68);
+            this.lblBuildWeb.Location = new System.Drawing.Point(3, 38);
             this.lblBuildWeb.Name = "lblBuildWeb";
             this.lblBuildWeb.Size = new System.Drawing.Size(93, 13);
             this.lblBuildWeb.TabIndex = 23;
@@ -296,7 +278,7 @@ namespace TrainingManagerBuilder
             // progressBarWeb
             // 
             this.progressBarWeb.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.progressBarWeb.Location = new System.Drawing.Point(115, 65);
+            this.progressBarWeb.Location = new System.Drawing.Point(115, 35);
             this.progressBarWeb.Name = "progressBarWeb";
             this.progressBarWeb.Size = new System.Drawing.Size(89, 20);
             this.progressBarWeb.TabIndex = 22;
@@ -347,21 +329,11 @@ namespace TrainingManagerBuilder
             this.lblElapsedTimeFileVersion.TabIndex = 29;
             this.lblElapsedTimeFileVersion.Text = "Waiting";
             // 
-            // lblElapsedTimeTM
-            // 
-            this.lblElapsedTimeTM.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblElapsedTimeTM.AutoSize = true;
-            this.lblElapsedTimeTM.Location = new System.Drawing.Point(210, 38);
-            this.lblElapsedTimeTM.Name = "lblElapsedTimeTM";
-            this.lblElapsedTimeTM.Size = new System.Drawing.Size(43, 13);
-            this.lblElapsedTimeTM.TabIndex = 30;
-            this.lblElapsedTimeTM.Text = "Waiting";
-            // 
             // lblElapsedTimeWeb
             // 
             this.lblElapsedTimeWeb.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblElapsedTimeWeb.AutoSize = true;
-            this.lblElapsedTimeWeb.Location = new System.Drawing.Point(210, 68);
+            this.lblElapsedTimeWeb.Location = new System.Drawing.Point(210, 38);
             this.lblElapsedTimeWeb.Name = "lblElapsedTimeWeb";
             this.lblElapsedTimeWeb.Size = new System.Drawing.Size(43, 13);
             this.lblElapsedTimeWeb.TabIndex = 31;
@@ -423,21 +395,11 @@ namespace TrainingManagerBuilder
             this.lblStatusFileVersion.TabIndex = 36;
             this.lblStatusFileVersion.Text = "placeholder";
             // 
-            // lblStatusTM
-            // 
-            this.lblStatusTM.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblStatusTM.AutoSize = true;
-            this.lblStatusTM.Location = new System.Drawing.Point(269, 38);
-            this.lblStatusTM.Name = "lblStatusTM";
-            this.lblStatusTM.Size = new System.Drawing.Size(62, 13);
-            this.lblStatusTM.TabIndex = 37;
-            this.lblStatusTM.Text = "placeholder";
-            // 
             // lblStatusWeb
             // 
             this.lblStatusWeb.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblStatusWeb.AutoSize = true;
-            this.lblStatusWeb.Location = new System.Drawing.Point(269, 68);
+            this.lblStatusWeb.Location = new System.Drawing.Point(269, 38);
             this.lblStatusWeb.Name = "lblStatusWeb";
             this.lblStatusWeb.Size = new System.Drawing.Size(62, 13);
             this.lblStatusWeb.TabIndex = 38;
@@ -504,24 +466,24 @@ namespace TrainingManagerBuilder
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 95F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 59F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 89F));
+            this.tableLayoutPanel1.Controls.Add(this.lblBuildTM, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblStatusTM, 3, 2);
+            this.tableLayoutPanel1.Controls.Add(this.progressBarTM, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblElapsedTimeTM, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.lblStatusInstaller, 3, 4);
-            this.tableLayoutPanel1.Controls.Add(this.progressBarTM, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblStatusCopyZips, 3, 3);
             this.tableLayoutPanel1.Controls.Add(this.lblUpdateFileVersions, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblStatusWeb, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.progressBarWeb, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblStatusTM, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblStatusWeb, 3, 1);
             this.tableLayoutPanel1.Controls.Add(this.progressBarUpdateFileVersions, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblStatusFileVersion, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.progressBarCopyZip, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.lblElapsedTimeInstaller, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.progressBarWeb, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblBuildWeb, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblElapsedTimeWeb, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.progressBarInstaller, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.lblElapsedTimeCopyZips, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.lblElapsedTimeFileVersion, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblElapsedTimeWeb, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblElapsedTimeTM, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblBuildTM, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblBuildWeb, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.lblCopyZips, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.lblBuildInstaller, 0, 4);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 19);
@@ -534,6 +496,44 @@ namespace TrainingManagerBuilder
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(339, 145);
             this.tableLayoutPanel1.TabIndex = 44;
+            // 
+            // lblBuildTM
+            // 
+            this.lblBuildTM.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblBuildTM.AutoSize = true;
+            this.lblBuildTM.Location = new System.Drawing.Point(3, 68);
+            this.lblBuildTM.Name = "lblBuildTM";
+            this.lblBuildTM.Size = new System.Drawing.Size(86, 13);
+            this.lblBuildTM.TabIndex = 50;
+            this.lblBuildTM.Text = "Build and zip TM";
+            // 
+            // lblStatusTM
+            // 
+            this.lblStatusTM.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblStatusTM.AutoSize = true;
+            this.lblStatusTM.Location = new System.Drawing.Point(269, 68);
+            this.lblStatusTM.Name = "lblStatusTM";
+            this.lblStatusTM.Size = new System.Drawing.Size(62, 13);
+            this.lblStatusTM.TabIndex = 52;
+            this.lblStatusTM.Text = "placeholder";
+            // 
+            // progressBarTM
+            // 
+            this.progressBarTM.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.progressBarTM.Location = new System.Drawing.Point(115, 65);
+            this.progressBarTM.Name = "progressBarTM";
+            this.progressBarTM.Size = new System.Drawing.Size(89, 20);
+            this.progressBarTM.TabIndex = 49;
+            // 
+            // lblElapsedTimeTM
+            // 
+            this.lblElapsedTimeTM.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblElapsedTimeTM.AutoSize = true;
+            this.lblElapsedTimeTM.Location = new System.Drawing.Point(210, 68);
+            this.lblElapsedTimeTM.Name = "lblElapsedTimeTM";
+            this.lblElapsedTimeTM.Size = new System.Drawing.Size(43, 13);
+            this.lblElapsedTimeTM.TabIndex = 51;
+            this.lblElapsedTimeTM.Text = "Waiting";
             // 
             // gbSettings
             // 
@@ -595,7 +595,7 @@ namespace TrainingManagerBuilder
             this.tableLayoutPanel3.ColumnCount = 3;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 36.30137F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 63.69863F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 123F));
             this.tableLayoutPanel3.Controls.Add(this.lblSourcePath, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.txtSourcePath, 1, 0);
             this.tableLayoutPanel3.Controls.Add(this.btnBrowseSource, 2, 0);
@@ -680,8 +680,6 @@ namespace TrainingManagerBuilder
         private Button btnBrowseOutput;
         private ProgressBar progressBarUpdateFileVersions;
         private Label lblUpdateFileVersions;
-        private Label lblBuildTM;
-        private ProgressBar progressBarTM;
         private Label lblBuildWeb;
         private ProgressBar progressBarWeb;
         private Label lblCopyZips;
@@ -689,14 +687,12 @@ namespace TrainingManagerBuilder
         private Label lblBuildInstaller;
         private ProgressBar progressBarInstaller;
         private Label lblElapsedTimeFileVersion;
-        private Label lblElapsedTimeTM;
         private Label lblElapsedTimeWeb;
         private Label lblElapsedTimeCopyZips;
         private Label lblElapsedTimeInstaller;
         private CheckBox chkOpenGitAfterBuild;
         private CheckBox chkOpenOutputFolderAfterBuild;
         private Label lblStatusFileVersion;
-        private Label lblStatusTM;
         private Label lblStatusWeb;
         private Label lblStatusCopyZips;
         private Label lblStatusInstaller;
@@ -710,5 +706,9 @@ namespace TrainingManagerBuilder
         private TableLayoutPanel tableLayoutPanel3;
         private GroupBox gbVersions;
         private GroupBox gbPaths;
+        private Label lblBuildTM;
+        private Label lblStatusTM;
+        private ProgressBar progressBarTM;
+        private Label lblElapsedTimeTM;
     }
 }

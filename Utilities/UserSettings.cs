@@ -1,244 +1,251 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
-using JsonFormatting = Newtonsoft.Json.Formatting;
+using System.Threading;
 
 public class UserSettings
 {
-    public bool OpenOutputDirectoryAfterBuild { get; set; }
-    public bool OpenTortoiseGitAfterBuild { get; set; }
+    // Singleton implementation
+    private static readonly Lazy<UserSettings> lazyInstance = new Lazy<UserSettings>(() => LoadSettings(), LazyThreadSafetyMode.ExecutionAndPublication);
+    public static UserSettings Instance => lazyInstance.Value;
 
-    public bool RememberSourcePath { get; set; }
+    private UserSettings()
+    {
+        OpenOutputDirectoryAfterBuild = false;
+        OpenTortoiseGitAfterBuild = false;
+        RememberOutputPath = false;
+        RememberSourcePath = false;
+        SourcePath = string.Empty;
+        OutputPath = string.Empty;
+        MSBuildPath = string.Empty;
+        TortoiseGitPath = string.Empty;
+    }
+
     [JsonProperty]
-    private string sourcePath;
+    public bool OpenOutputDirectoryAfterBuild
+    {
+        get => _openOutputDirectoryAfterBuild;
+        set
+        {
+            if (_openOutputDirectoryAfterBuild != value)
+            {
+                _openOutputDirectoryAfterBuild = value;
+                Logger.Log($"OpenOutputDirectoryAfterBuild set to {value}");
+                SaveSettings();
+            }
+        }
+    }
+    private bool _openOutputDirectoryAfterBuild;
+
+    [JsonProperty]
+    public bool OpenTortoiseGitAfterBuild
+    {
+        get => _openTortoiseGitAfterBuild;
+        set
+        {
+            if (_openTortoiseGitAfterBuild != value)
+            {
+                _openTortoiseGitAfterBuild = value;
+                Logger.Log($"OpenTortoiseGitAfterBuild set to {value}");
+                SaveSettings();
+            }
+        }
+    }
+    private bool _openTortoiseGitAfterBuild;
+
+    [JsonProperty]
+    public bool RememberOutputPath
+    {
+        get => _rememberOutputPath;
+        set
+        {
+            if (_rememberOutputPath != value)
+            {
+                _rememberOutputPath = value;
+                Logger.Log($"RememberOutputPath set to {value}");
+                if (!value)
+                {
+                    OutputPath = null;
+                }
+                SaveSettings();
+            }
+        }
+    }
+    private bool _rememberOutputPath;
+
+    [JsonProperty]
+    public bool RememberSourcePath
+    {
+        get => _rememberSourcePath;
+        set
+        {
+            if (_rememberSourcePath != value)
+            {
+                _rememberSourcePath = value;
+                Logger.Log($"RememberSourcePath set to {value}");
+                if (!value)
+                {
+                    SourcePath = null;
+                }
+                SaveSettings();
+            }
+        }
+    }
+    private bool _rememberSourcePath;
+
+    [JsonProperty]
     public string SourcePath
     {
-        get => !string.IsNullOrEmpty(sourcePath) && Directory.Exists(sourcePath) ? sourcePath : null;
+        get => IsValidPath(_sourcePath) ? _sourcePath : null;
         set
         {
-            sourcePath = RememberSourcePath ? value : null;
-            SaveSettings();
+            if (_sourcePath != value)
+            {
+                _sourcePath = RememberSourcePath ? value : null;
+                Logger.Log($"SourcePath set to {_sourcePath}");
+                SaveSettings();
+            }
         }
     }
+    private string _sourcePath;
 
-    public bool RememberOutputPath { get; set; }
     [JsonProperty]
-    private string outputPath;
     public string OutputPath
     {
-        get => !string.IsNullOrEmpty(outputPath) && Directory.Exists(outputPath) ? outputPath : null;
+        get => IsValidPath(_outputPath) ? _outputPath : null;
         set
         {
-            outputPath = RememberOutputPath ? value : null;
-            SaveSettings();
-        }
-    }
-
-
-    private string msbuildPath;
-    private string tortoiseGitPath;
-
-
-    private UserSettings() { }
-
-    #region Singleton
-    private static readonly object lockObject = new object();
-    private static UserSettings instance;
-
-    public static UserSettings Instance
-    {
-        get
-        {
-            if (instance == null)
+            if (_outputPath != value)
             {
-                lock (lockObject)
-                {
-                    if (instance == null)
-                    {
-                        instance = LoadSettings();
-                    }
-                }
+                _outputPath = RememberOutputPath ? value : null;
+                Logger.Log($"OutputPath set to {_outputPath}");
+                SaveSettings();
             }
-            return instance;
         }
     }
-    #endregion
+    private string _outputPath;
 
-    #region Settings Loading/Saving
-    public static string ConfigFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "userSettings.json");
-
-    private static UserSettings LoadSettings()
-    {
-        if (File.Exists(ConfigFilePath))
-        {
-            string json = File.ReadAllText(ConfigFilePath);
-            var loadedSettings = JsonConvert.DeserializeObject<UserSettings>(json);
-
-            // Kontrollera att de privata fälten sätts korrekt vid uppstart
-            loadedSettings.sourcePath = loadedSettings.RememberSourcePath ? loadedSettings.sourcePath : null;
-            loadedSettings.outputPath = loadedSettings.RememberOutputPath ? loadedSettings.outputPath : null;
-
-            return loadedSettings;
-        }
-
-        return new UserSettings();  // Return default settings if file does not exist
-    }
-
-    public void SaveSettings()
-    {
-        //if (!RememberSourcePath)
-        //{
-        //    SourcePath = null;
-        //}
-        //if (!RememberOutputPath)
-        //{
-        //    OutputPath = null;
-        //}
-        string json = JsonConvert.SerializeObject(this, JsonFormatting.Indented);
-        File.WriteAllText(ConfigFilePath, json);
-    }
-    #endregion
-
-    #region MSBuild
+    [JsonProperty]
     public string MSBuildPath
     {
         get
         {
-            if (!string.IsNullOrEmpty(msbuildPath) && File.Exists(msbuildPath))
+            if (IsValidFilePath(_msbuildPath))
             {
-                return msbuildPath;
+                return _msbuildPath;
             }
 
-            msbuildPath = FindMSBuildPath();
-            if (!string.IsNullOrEmpty(msbuildPath))
+            _msbuildPath = ToolLocator.FindMSBuildPath();
+            if (!string.IsNullOrEmpty(_msbuildPath))
             {
+                Logger.Log($"MSBuildPath found: {_msbuildPath}");
                 SaveSettings();
             }
-            return msbuildPath;
+            return _msbuildPath;
         }
         set
         {
-            msbuildPath = value;
-            SaveSettings();
-        }
-    }
-
-    private string FindMSBuildPath()
-    {
-        if (!string.IsNullOrEmpty(msbuildPath) && File.Exists(msbuildPath))
-        {
-            Logger.Log($"Using saved MSBuild path: {msbuildPath}");
-            return msbuildPath;
-        }
-
-        // If MSBuild is not found in PATH, try to find it in common installation paths
-        List<string> potentialPaths = new List<string>
-        {
-            @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files (x86)\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe",
-            @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe"
-        };
-
-        foreach (string path in potentialPaths)
-        {
-            if (File.Exists(path))
+            if (_msbuildPath != value)
             {
-                Logger.Log($"MSBuild found at: {path}");
-                msbuildPath = path;
+                _msbuildPath = value;
+                Logger.Log($"MSBuildPath set to {_msbuildPath}");
                 SaveSettings();
-                return path;
             }
         }
-
-        // Ask user to locate MSBuild.exe
-        MessageBox.Show("Could not find MSBuild.exe. Please select the correct MSBuild.exe file.",
-            "MSBuild Not Found",
-            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-        OpenFileDialog openFileDialog = new OpenFileDialog
-        {
-            Title = "Select MSBuild.exe",
-            Filter = "MSBuild.exe|MSBuild.exe",
-            InitialDirectory = @"C:\Program Files\"
-        };
-
-        if (openFileDialog.ShowDialog() == DialogResult.OK)
-        {
-            msbuildPath = openFileDialog.FileName;
-            SaveSettings();
-            return openFileDialog.FileName;
-        }
-
-        throw new FileNotFoundException("MSBuild.exe could not be located.");
     }
+    private string _msbuildPath;
 
-
-    #endregion
-
-    #region TortoiseGit
-    public bool IsTortoiseGitAvailable => !string.IsNullOrEmpty(TortoiseGitPath) && File.Exists(TortoiseGitPath);
-
+    [JsonProperty]
     public string TortoiseGitPath
     {
         get
         {
-            if (string.IsNullOrEmpty(tortoiseGitPath) || !File.Exists(tortoiseGitPath))
+            if (IsValidFilePath(_tortoiseGitPath))
             {
-                tortoiseGitPath = FindTortoiseGitPath();
+                return _tortoiseGitPath;
+            }
+
+            _tortoiseGitPath = ToolLocator.FindTortoiseGitPath();
+            if (!string.IsNullOrEmpty(_tortoiseGitPath))
+            {
+                Logger.Log($"TortoiseGitPath found: {_tortoiseGitPath}");
                 SaveSettings();
             }
-            return tortoiseGitPath;
+            return _tortoiseGitPath;
         }
         set
         {
-            tortoiseGitPath = value;
-            SaveSettings();
-        }
-    }
-
-    private static string FindTortoiseGitPath()
-    {
-        // Try to find TortoiseGitProc.exe in default installation paths
-        List<string> potentialPaths = new List<string>
-        {
-            @"C:\Program Files\TortoiseGit\bin\TortoiseGitProc.exe",
-            @"C:\Program Files (x86)\TortoiseGit\bin\TortoiseGitProc.exe"
-        };
-
-        foreach (string path in potentialPaths)
-        {
-            if (File.Exists(path))
+            if (_tortoiseGitPath != value)
             {
-                Logger.Log($"TortoiseGit found at: {path}");
-                return path;
+                _tortoiseGitPath = value;
+                Logger.Log($"TortoiseGitPath set to {_tortoiseGitPath}");
+                SaveSettings();
             }
         }
+    }
+    private string _tortoiseGitPath;
 
-        // Ask user to locate TortoiseGitProc.exe
-        OpenFileDialog openFileDialog = new OpenFileDialog
-        {
-            Title = "Select TortoiseGitProc.exe",
-            Filter = "TortoiseGitProc.exe|TortoiseGitProc.exe",
-            InitialDirectory = @"C:\Program Files\"
-        };
+    public bool IsTortoiseGitAvailable => !string.IsNullOrEmpty(TortoiseGitPath) && File.Exists(TortoiseGitPath);
 
-        if (openFileDialog.ShowDialog() == DialogResult.OK && File.Exists(openFileDialog.FileName))
+    #region Settings Loading/Saving
+    public static string ConfigFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "userSettings.json");
+    private static readonly object fileLock = new object();
+
+    private static UserSettings LoadSettings()
+    {
+        try
         {
-            return openFileDialog.FileName;
+            if (File.Exists(ConfigFilePath))
+            {
+                string json = File.ReadAllText(ConfigFilePath);
+                var loadedSettings = JsonConvert.DeserializeObject<UserSettings>(json);
+
+                return loadedSettings ?? new UserSettings();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Failed to load settings from {ConfigFilePath}. Exception: {ex.Message}");
         }
 
-        return null;
+        return new UserSettings();
+    }
+
+    public void SaveSettings()
+    {
+        lock (fileLock)
+        {
+            try
+            {
+                // Säkerställ att mappen finns
+                string directory = Path.GetDirectoryName(ConfigFilePath);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                string json = JsonConvert.SerializeObject(this, Formatting.Indented);
+                Logger.Log($"Saving settings: {json}"); // Log the JSON string
+                File.WriteAllText(ConfigFilePath, json);
+                Logger.Log($"Settings saved to {ConfigFilePath}");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Failed to save settings to {ConfigFilePath}. Exception: {ex.Message}");
+            }
+        }
+    }
+    #endregion
+
+    #region Helper Methods
+    private bool IsValidPath(string path)
+    {
+        return !string.IsNullOrEmpty(path) && Directory.Exists(path);
+    }
+
+    private bool IsValidFilePath(string path)
+    {
+        return !string.IsNullOrEmpty(path) && File.Exists(path);
     }
     #endregion
 }

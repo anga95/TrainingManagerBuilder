@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
+using ProgressBar = System.Windows.Forms.ProgressBar;
 using Timer = System.Windows.Forms.Timer;
 
-public class ProgressStepManager
+public class ProgressStepManager : IDisposable
 {
     private ProgressBar progressBar { get; }
 
@@ -34,7 +36,7 @@ public class ProgressStepManager
         };
     }
 
-    public void Start(int maximum)
+    public void Start(int? maximum = null)
     {
         // Timers
         timerLabel.Text = "00:00:00";
@@ -44,22 +46,12 @@ public class ProgressStepManager
 
         //Progressbar
         progressBar.Value = 0;
-        progressBar.Maximum = maximum;
+        if (maximum != null)
+        {
+            setProgressBarMaximum(maximum.Value);
+        }
 
-        statusLabel.Text = "In progress...";
-    }
-    public void Start()
-    {
-        // Timers
-        timerLabel.Text = "00:00:00";
-        stopwatch.Reset();
-        stopwatch.Start();
-        timer.Start();
-
-        //Progressbar
-        progressBar.Value = 0;
-
-        statusLabel.Text = "In progress...";
+        UpdateStatus("In progress...");
     }
 
     public void Stop()
@@ -67,7 +59,16 @@ public class ProgressStepManager
         stopwatch.Stop();
         timer.Stop();
 
-        statusLabel.Text = "Completed";
+        UpdateStatus("Completed");
+    }
+
+    public void Failed()
+    {
+        stopwatch.Stop();
+        timer.Stop();
+
+        SetProgressBarColor(Color.Red);
+        UpdateStatus("Failed");
     }
 
     public void SetProgress(int value)
@@ -82,6 +83,42 @@ public class ProgressStepManager
         }
     }
 
+    public void UpdateStatus(string status)
+    {
+        if (statusLabel.InvokeRequired)
+        {
+            statusLabel.Invoke(new Action(() => statusLabel.Text = status));
+        }
+        else
+        {
+            statusLabel.Text = status;
+        }
+    }
+
+    private void setProgressBarMaximum(int maximum)
+    {
+        if (progressBar.InvokeRequired)
+        {
+            progressBar.Invoke(new Action(() => progressBar.Maximum = maximum));
+        }
+        else
+        {
+            progressBar.Maximum = maximum;
+        }
+    }
+
+    private void SetProgressBarColor(Color color)
+    {
+        if (progressBar.InvokeRequired)
+        {
+            progressBar.Invoke(new Action(() => progressBar.ForeColor = color));
+        }
+        else
+        {
+            progressBar.ForeColor = color;
+        }
+    }
+
     public void SetWaiting()
     {
         timerLabel.Text = "Waiting...";
@@ -90,5 +127,11 @@ public class ProgressStepManager
     public void ResetProgressBar()
     {
         progressBar.Value = 0;
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+        stopwatch?.Stop();
     }
 }
